@@ -8,7 +8,7 @@ def info(obj, spacing=10, collapse=1):
     Takes module, class, list, dictionary, or string."""
 
     # This is the closest I can get to the author's original intent in Py3. Dir() doesn't return all methods,
-    # and callable doesn't filter out the builtins.
+    # and callable doesn't filter out the __< >__ methods.
     methodlist = mlist = [n for (n, v) in inspect.getmembers(obj) if callable(v) and not n.startswith('__')]
 
     processfunc = (lambda s: " ".join(s.split())) if collapse else (lambda s: s)
