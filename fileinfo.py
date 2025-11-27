@@ -19,7 +19,7 @@ def stripnulls(data):
     return data.replace("\00", " ").strip()
 
 class FileInfo(dict):
-    "store file metadata"
+    """Initialize ["name"] key with filename."""
     def __init__(self, filename=None):
         self["name"] = filename
 
@@ -37,37 +37,47 @@ class MP3FileInfo(FileInfo):
         self.clear()
         try:
             with open(filename, "rb", 0) as fsock:
-                try:
-                    fsock.seek(-128, 2)
-                    tagdata = fsock.read(128)
-                finally:
-                    fsock.close()
+                fsock.seek(-128, 2)
+                tagdata = fsock.read(128)
+
                 if tagdata[:3].decode() == 'TAG':
                     for tag, (start, end, parsefunc) in self.tagDataMap.items():
+                        # Call back to __setitem__ to add key-value pair to dictionary.
                         self[tag] = parsefunc(tagdata[start:end].decode())
-
         except IOError:
             pass
 
     def __setitem__(self, key, item):
+        """Called after dictionary is initilaised with first key ["name"].
+            Then goes on to parse additional metadata.
+        Args:
+            key (_type_): _description_
+            item (_type_): _description_
+        """
         if key == "name" and item:
             self.__parse(item)
         FileInfo.__setitem__(self, key, item)
 
 def listdirectory(directory, fileextlist):
-    "get list of file info objects for files of particular extensions"
+    "get list of dictionaries containing meta info for files of specified extension"
+    # Get list of files in directory
     filelist = [os.path.normcase(f) for f in os.listdir(directory)]
+    # Create full path to file, filter by extension
     filelist = [os.path.join(directory, f) for f in filelist
                 if os.path.splitext(f)[1] in fileextlist]
 
     def getfileinfoclass(filename, module=sys.modules[FileInfo.__module__]):
-        "get file info class from filename extension"
+        "get file info class according to filename extension"
         subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo"
         return hasattr(module, subclass) and getattr(module, subclass) or FileInfo
 
+    # Get custom dictionary object for specific file type,
+    # Initialise dictionary with ["name"]=<filename>,
+    # Parse file meta data into dictionary and return list of dictionaries.
     return [getfileinfoclass(f)(f) for f in filelist]
 
 if __name__ == "__main__":
+    # info is dictionary object containing file metadata.
     for info in listdirectory("C:/temp/", [".mp3"]):
         print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
         print()
