@@ -4,8 +4,8 @@ dictionary, with key-value pairs for each piece of metadata.
 import fileinfo
 info = fileinfo.MP3FileInfo("/music/ap/mahadeva.mp3")
 print("\n".join(["%s=%s" % (k, v) for k, v in info.items()]))
-Or use listDirectory function to get info on all files in a directory.
-for info in fileinfo.listDirectory("/music/ap/", [".mp3"]):
+Or use listdirectory function to get info on all files in a directory.
+for info in fileinfo.listdirectory("/music/ap/", [".mp3"]):
 ...
 Framework can be extended by adding classes for particular file types, e.g.
 HTMLFileInfo, MPGFileInfo, DOCFileInfo. Each class is completely responsible for
