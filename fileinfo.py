@@ -36,15 +36,16 @@ class MP3FileInfo(FileInfo):
         "parse ID3v1.0 tags from MP3 file"
         self.clear()
         try:
-            fsock = open(filename, "rb", 0)
-            try:
-                fsock.seek(-128, 2)
-                tagdata = fsock.read(128)
-            finally:
-                fsock.close()
-            if tagdata[:3].decode("utf-8") == 'TAG':
-                for tag, (start, end, parsefunc) in self.tagDataMap.items():
-                    self[tag] = parsefunc(tagdata[start:end].decode("utf-8"))
+            with open(filename, "rb", 0) as fsock:
+                try:
+                    fsock.seek(-128, 2)
+                    tagdata = fsock.read(128)
+                finally:
+                    fsock.close()
+                if tagdata[:3].decode("utf-8") == 'TAG':
+                    for tag, (start, end, parsefunc) in self.tagDataMap.items():
+                        self[tag] = parsefunc(tagdata[start:end].decode("utf-8"))
+
         except IOError:
             pass
 
