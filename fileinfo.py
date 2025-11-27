@@ -19,8 +19,10 @@ def stripnulls(data):
     return data.replace("\00", " ").strip()
 
 class FileInfo(dict):
-    """Initialize parent class key ["name"] with filename."""
+    """Initialize this parent class key ["name"] with filename value."""
     def __init__(self, filename=None):
+        """This implementation does not override dict __init__, which expects a k,v pair.
+            We just redefine the init here for our own purposes."""
         self["name"] = filename
 
 class MP3FileInfo(FileInfo):
@@ -41,9 +43,10 @@ class MP3FileInfo(FileInfo):
                 tagdata = fsock.read(128)
 
                 if tagdata[:3].decode() == 'TAG':
+                    # Dictionary with string key, tuple value of (start, end, parsefunc).
                     for tag, (start, end, parsefunc) in self.tagDataMap.items():
                         # Call back to __setitem__ to add key-value pair to dictionary.
-                        self[tag] = parsefunc(tagdata[start:end].decode())
+                        self[tag] = parsefunc(tagdata[start:end].decode()) # utf-8
         except IOError:
             pass
 
