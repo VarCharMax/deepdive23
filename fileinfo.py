@@ -19,7 +19,7 @@ def stripnulls(data):
     return data.replace("\00", " ").strip()
 
 class FileInfo(dict):
-    """Initialize ["name"] key with filename."""
+    """Initialize parent class key ["name"] with filename."""
     def __init__(self, filename=None):
         self["name"] = filename
 
@@ -48,7 +48,7 @@ class MP3FileInfo(FileInfo):
             pass
 
     def __setitem__(self, key, item):
-        """Called after dictionary is initilaised with first key ["name"].
+        """Called after parent dictionary is initialised with first key ["name"].
             Then goes on to parse additional metadata.
         Args:
             key (_type_): _description_
@@ -77,7 +77,7 @@ def listdirectory(directory, fileextlist):
     return [getfileinfoclass(f)(f) for f in filelist]
 
 if __name__ == "__main__":
-    # info is dictionary object containing file metadata.
+    # info is subclassed FileInfo dictionary containing file metadata.
     for info in listdirectory("C:/temp/", [".mp3"]):
         print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
         print()
