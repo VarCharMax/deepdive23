@@ -19,8 +19,7 @@ def info(obj, spacing=10, collapse=1):
 
     processfunc = (lambda s: " ".join(s.split())) if collapse else (lambda s: s)
 
-    print("\n".join(["%s %s" %
-                     (method.ljust(spacing), processfunc(str(getattr(obj, method).__doc__)))
+    print("\n".join([f"{method.ljust(spacing)} {processfunc(str(getattr(obj, method).__doc__))}"
                      for method in methodlist ]))
 
 if __name__ == "__main__":
