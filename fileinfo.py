@@ -3,7 +3,7 @@ Instantiate appropriate class with filename. Returned object acts like a
 dictionary, with key-value pairs for each piece of metadata.
 import fileinfo
 info = fileinfo.MP3FileInfo("/music/ap/mahadeva.mp3")
-print "\\n".join(["%s=%s" % (k, v) for k, v in info.items()])
+print("\n".join(["%s=%s" % (k, v) for k, v in info.items()]))
 Or use listDirectory function to get info on all files in a directory.
 for info in fileinfo.listDirectory("/music/ap/", [".mp3"]):
 ...
