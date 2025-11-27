@@ -42,9 +42,9 @@ class MP3FileInfo(FileInfo):
                 tagdata = fsock.read(128)
             finally:
                 fsock.close()
-            if tagdata[:3] == 'TAG':
+            if tagdata[:3].decode("utf-8") == 'TAG':
                 for tag, (start, end, parsefunc) in self.tagDataMap.items():
-                    self[tag] = parsefunc(tagdata[start:end])
+                    self[tag] = parsefunc(tagdata[start:end].decode("utf-8"))
         except IOError:
             pass
 
@@ -69,4 +69,4 @@ def listdirectory(directory, fileextlist):
 if __name__ == "__main__":
     for info in listdirectory("C:/temp/", [".mp3"]):
         print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
-        #print()
+        print()
