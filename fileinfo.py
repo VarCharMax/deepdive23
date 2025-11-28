@@ -10,7 +10,6 @@ class FileInfo(dict):
             We just redefine the init here for our own purposes."""
         self["name"] = filename
 
-
 def stripnulls(data):
     "strip whitespace and nulls"
     return data.replace("\00", " ").strip()

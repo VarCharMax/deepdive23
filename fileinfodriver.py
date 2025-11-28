@@ -16,41 +16,72 @@ import sys
 import importlib.util
 from fileinfo import FileInfo
 
-def import_from_path(module_name, file_path):
-    """Import a module given its name and file path."""
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
+class FileInfoDriver:
+    """_summary_
+    """
+    def __init__(self):
+        self.moduledict = {}
 
-def listdirectory(directory, fileextlist):
-    "get list of dictionaries containing meta info for files of specified extension"
-    # Get list of files in directory.
-    filelist = [os.path.normcase(f) for f in os.listdir(directory)]
-    # Create full path to file, filter by extension.
-    filelist = [os.path.join(directory, f) for f in filelist
-                if os.path.splitext(f)[1] in fileextlist]
+    def __getmodule__(self, name):
+        """_summary_
 
-    def getfileinfoclass(filename, module=sys.modules[FileInfo.__module__]):
-        "get file info class according to filename extension"
-        subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo"
-        module = subclass.lower()
-        try:
-            module = import_from_path(subclass,
-                os.path.join(os.path.dirname(__file__), f"{module}.py"))
-        except ModuleNotFoundError:
-            return FileInfo
+        Args:
+            name (_type_): _description_
 
-        return hasattr(module, subclass) and getattr(module, subclass) or FileInfo
+        Returns:
+            _type_: _description_
+        """
+        return self.moduledict.get(name) or None
+    def __savemodule__(self, name, module):
+        """_summary_
 
-    # Get custom dictionary object for specific file type,
-    # Initialise parent dictionary with ["name"]=<filename>,
-    # Parse file meta data into child dictionary and return list of dictionaries.
-    return [getfileinfoclass(f)(f) for f in filelist]
+        Args:
+            name (_type_): _description_
+            module (_type_): _description_
+        """
+        self.moduledict[name] = module
+
+    def __import_from_path__(self, module_name, file_path):
+        """Import a module given its name and file path."""
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        return module
+
+    def listdirectory(self, directory, fileextlist):
+        "get list of dictionaries containing meta info for files of specified extension"
+        # Get list of files in directory.
+        filelist = [os.path.normcase(f) for f in os.listdir(directory)]
+        # Create full path to file, filter by extension.
+        filelist = [os.path.join(directory, f) for f in filelist
+                    if os.path.splitext(f)[1] in fileextlist]
+
+        def getfileinfoclass(filename):
+            "get file info class according to filename extension"
+            subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo"
+            modulename = subclass.lower()
+            modtmp = self.__getmodule__(modulename)
+            if modtmp:
+                module = modtmp
+            else:
+                try:
+                    module = self.__import_from_path__(subclass,
+                        os.path.join(os.path.dirname(__file__), f"{modulename}.py"))
+                    self.__savemodule__(modulename, module)
+                except ModuleNotFoundError:
+                    return FileInfo
+
+            return hasattr(module, subclass) and getattr(module, subclass) or FileInfo
+
+        # Get custom dictionary object for specific file type,
+        # Initialise parent dictionary with ["name"]=<filename>,
+        # Parse file meta data into child dictionary and return list of dictionaries.
+        return [getfileinfoclass(f)(f) for f in filelist]
 
 if __name__ == "__main__":
     # info is subclassed FileInfo dictionary containing file metadata.
-    for info in listdirectory("C:/temp/", [".mp3"]):
+    driver = FileInfoDriver()
+    for info in driver .listdirectory("C:/temp/", [".mp3"]):
         print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
         print()

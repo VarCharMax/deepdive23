@@ -20,11 +20,11 @@ class MP3FileInfo(FileInfo):
                 fsock.seek(-128, 2)
                 tagdata = fsock.read(128)
 
-                if tagdata[:3].decode() == 'TAG':
+                if tagdata[:3].decode() == 'TAG':  # utf-8
                     # Dictionary with string key, tuple value of (start, end, parsefunc).
                     for tag, (start, end, parsefunc) in self.tagDataMap.items():
                         # Call back to __setitem__ to add key-value pair to dictionary.
-                        self[tag] = parsefunc(tagdata[start:end].decode()) # utf-8
+                        self[tag] = parsefunc(tagdata[start:end].decode())
         except IOError:
             pass
 
