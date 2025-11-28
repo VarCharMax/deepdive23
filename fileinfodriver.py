@@ -61,11 +61,13 @@ class FileInfoDriver:
             "get file info class according to filename extension"
             subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo" # e.g. .mp3 -> MP3FileInfo
             modulename = subclass.lower() # e.g. mp3fileinfo
+            # Use cached module if already loaded.
             modtmp = self.__getmodule__(modulename)
             if modtmp:
                 module = modtmp
             else:
                 try:
+                    # Otherwise try to load module from file.
                     module = self.__import_from_path__(subclass,
                         os.path.join(os.path.dirname(__file__), f"{modulename}.py"))
                     self.__savemodule__(modulename, module)
@@ -82,6 +84,6 @@ class FileInfoDriver:
 if __name__ == "__main__":
     # info is subclassed FileInfo dictionary containing file metadata.
     driver = FileInfoDriver()
-    for info in driver .listdirectory("C:/temp/", [".mp3"]):
+    for info in driver.listdirectory("C:/temp/", [".mp3"]):
         print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
         print()
