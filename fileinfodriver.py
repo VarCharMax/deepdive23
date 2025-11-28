@@ -10,6 +10,8 @@ for info in fileinfo.listdirectory("/music/ap/", [".mp3"]):
 Framework can be extended by adding classes for particular file types, e.g.
 HTMLFileInfo, MPGFileInfo, DOCFileInfo. Each class is completely responsible for
 parsing its files appropriately; see MP3FileInfo for example.
+
+TODO: Make driver agnostic as to file extensions.
 """
 import os
 import sys
