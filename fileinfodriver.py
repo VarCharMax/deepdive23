@@ -59,8 +59,8 @@ class FileInfoDriver:
 
         def getfileinfoclass(filename):
             "get file info class according to filename extension"
-            subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo"
-            modulename = subclass.lower()
+            subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo" # e.g. .mp3 -> MP3FileInfo
+            modulename = subclass.lower() # e.g. mp3fileinfo
             modtmp = self.__getmodule__(modulename)
             if modtmp:
                 module = modtmp
@@ -72,7 +72,7 @@ class FileInfoDriver:
                 except ModuleNotFoundError:
                     return FileInfo
 
-            return hasattr(module, subclass) and getattr(module, subclass) or FileInfo
+            return getattr(module, subclass) or FileInfo
 
         # Get custom dictionary object for specific file type,
         # Initialise parent dictionary with ["name"]=<filename>,
