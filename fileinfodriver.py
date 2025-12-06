@@ -25,7 +25,7 @@ from fileinfo import FileInfo
 class FileInfoDriver:
     """_summary_
     """
-    def __import_from_path(self, module_name, file_path) -> ModuleType | None:
+    def __import_from_path(self, module_name, file_path) -> ModuleType:
         """Import a module given its name and file path."""
         spec = importlib.util.spec_from_file_location(module_name, file_path)
         if spec:
@@ -44,7 +44,7 @@ class FileInfoDriver:
         filelist = [os.path.join(directory, f) for f in filelist
                     if os.path.splitext(f)[1] in fileextlist]
 
-        def file_ext(path):# -> Any:
+        def file_ext(path) -> str:
             return os.path.splitext(path)[1].upper()[1:]
 
         def getfileinfoclass(filename) -> type[FileInfo]:
