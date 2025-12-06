@@ -1,57 +1,42 @@
 """Framework for getting filetype-specific metadata.
 Instantiate appropriate class with filename. Returned object acts like a
-dictionary, with key-value pairs for each piece of metadata.
-import fileinfo
-info = fileinfo.MP3FileInfo("/music/ap/mahadeva.mp3")
-print("\n".join(["%s=%s" % (k, v) for k, v in info.items()]))
-Or use listdirectory function to get info on all files in a directory.
-for info in fileinfo.listdirectory("/music/ap/", [".mp3"]):
+dictionary, with key-value pairs for each piece of metadata:
+    import mp3fileinfo
+    info = mp3fileinfo.MP3FileInfo("C:/temp/01 Born In Chicago.mp3")
+    print("\n".join(["%s=%s" % (k, v) for k, v in info.items()]))
+Or use listdirectory function to get info on all files in a directory:
+    driver = FileInfoDriver()
+    for info in driver.listdirectory("C:/temp/", [".mp3"]):
 ...
 Framework can be extended by adding classes for particular file types, e.g.
 HTMLFileInfo, MPGFileInfo, DOCFileInfo. Each class is completely responsible for
 parsing its files appropriately; see MP3FileInfo for example.
 
 TODO: Make driver agnostic as to file extensions.
+      Write at least one more driver, e.g. JPGFileInfo.
 """
-import os
 import sys
+import os
 import importlib.util
+from types import ModuleType
+from string import Template
 from fileinfo import FileInfo
 
 class FileInfoDriver:
     """_summary_
     """
-    def __init__(self):
-        self.moduledict = {}
-
-    def __getmodule__(self, name):
-        """_summary_
-
-        Args:
-            name (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        return self.moduledict.get(name) or None
-    def __savemodule__(self, name, module):
-        """_summary_
-
-        Args:
-            name (_type_): _description_
-            module (_type_): _description_
-        """
-        self.moduledict[name] = module
-
-    def __import_from_path__(self, module_name, file_path):
+    def __import_from_path(self, module_name, file_path) -> ModuleType | None:
         """Import a module given its name and file path."""
         spec = importlib.util.spec_from_file_location(module_name, file_path)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[module_name] = module
-        spec.loader.exec_module(module)
-        return module
+        if spec:
+            module = importlib.util.module_from_spec(spec)
+            # Add to internal imported modules list.
+            sys.modules[module_name.lower()] = module
+            spec.loader.exec_module(module) # type: ignore
+            return module
+        raise ModuleNotFoundError()
 
-    def listdirectory(self, directory, fileextlist):
+    def listdirectory(self, directory, fileextlist) -> list[FileInfo]:
         "get list of dictionaries containing meta info for files of specified extension"
         # Get list of files in directory.
         filelist = [os.path.normcase(f) for f in os.listdir(directory)]
@@ -59,20 +44,21 @@ class FileInfoDriver:
         filelist = [os.path.join(directory, f) for f in filelist
                     if os.path.splitext(f)[1] in fileextlist]
 
-        def getfileinfoclass(filename):
-            "get file info class according to filename extension"
-            subclass = f"{os.path.splitext(filename)[1].upper()[1:]}FileInfo" # e.g. .mp3 -> MP3FileInfo
+        def file_ext(path):# -> Any:
+            return os.path.splitext(path)[1].upper()[1:]
+
+        def getfileinfoclass(filename) -> type[FileInfo]:
+            # e.g. .mp3 -> MP3FileInfo
+            subclass = Template('${ext}FileInfo').substitute(ext=file_ext(filename))
             modulename = subclass.lower() # e.g. mp3fileinfo
             # Use cached module if already loaded.
-            modtmp = self.__getmodule__(modulename)
-            if modtmp:
-                module = modtmp
+            if modulename in sys.modules:
+                module = sys.modules[modulename]
             else:
                 try:
                     # Otherwise try to load module from file.
-                    module = self.__import_from_path__(subclass,
+                    module = self.__import_from_path(subclass,
                         os.path.join(os.path.dirname(__file__), f"{modulename}.py"))
-                    self.__savemodule__(modulename, module)
                 except ModuleNotFoundError:
                     return FileInfo
 

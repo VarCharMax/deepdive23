@@ -1,8 +1,16 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "python-envs.pythonProjects": [
+      {
+        "path": "fileinfodriver.py",
+        "envManager": "ms-python.python:venv",
+        "packageManager": "ms-python.python:pip"
+      }
+    ]
+  }
 }
