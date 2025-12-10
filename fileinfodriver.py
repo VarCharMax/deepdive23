@@ -79,11 +79,14 @@ class FileInfoDriver:
 
 if __name__ == "__main__":
     FILEDIR = "/Users/rohanparkes/tmp"
-    if os.name == "nt":
+    if os.name == "nt":  # Windows
         FILEDIR = "C:\\temp"
+    if os.name == "posix":  # Mac OS
+        FILEDIR = "/Users/rohanparkes/tmp"
 
-    # info is subclassed FileInfo dictionary containing file metadata.
-    driver = FileInfoDriver()
-    for info in driver.listdirectory(FILEDIR, [".mp3"]):
-        print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
-        print()
+    if FILEDIR != "":
+        # info is subclassed FileInfo dictionary containing file metadata.
+        driver = FileInfoDriver()
+        for info in driver.listdirectory(FILEDIR, [".mp3"]):
+            print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
+            print()
