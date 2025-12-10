@@ -1,4 +1,6 @@
-"""_summary_"""
+"""_summary_
+TODO: module will crash if there's no tag data. Add a fix for this.
+"""
 
 import json
 from fileinfo import FileInfo, stripnulls
