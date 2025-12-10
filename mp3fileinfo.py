@@ -17,17 +17,15 @@ def genrefromcode(data: bytes) -> str:
     """
     gencode: str = str(ord(data))
 
-    if gencode == "255":
-        # no genre listed
-        return "Unknown"
-
     try:
         with open("genre.json", "r", encoding="utf-8") as gtext:
             genredict = json.loads(gtext.read())
             if gencode in genredict:
                 return genredict[gencode]
+            else:
+                return "Unknown"
     except IOError:
-        return ""
+        return "Error"
 
     return ""
 
