@@ -14,6 +14,8 @@ parsing its files appropriately; see MP3FileInfo for example.
 
 TODO: Make driver agnostic as to file extensions.
       Write at least one more driver, e.g. JPGFileInfo.
+      Implementation isn't very efficient because it has to instantiate parser class
+      with its resources with each loop.
 """
 
 import sys
