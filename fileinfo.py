@@ -1,15 +1,19 @@
 """_summary_
 
-    Returns:
-        _type_: _description_
+Returns:
+    _type_: _description_
 """
+
+
 class FileInfo(dict):
     """Initialize this parent class key ["name"] with filename value."""
-    def __init__(self, filename=None):
+
+    def __init__(self, filename=None) -> None:
         """This implementation does not override the parent dict __init__, which expects a k,v pair.
-            We just redefine the init here for our own purposes."""
+        We just redefine the init here for our own purposes."""
         self["name"] = filename
 
-def stripnulls(data):
+
+def stripnulls(data: bytes) -> bytes:
     "strip whitespace and nulls"
-    return data.replace("\00", " ").strip()
+    return data.replace(b"\00", b" ").strip()

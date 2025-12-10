@@ -4,12 +4,15 @@ def my_decorator(func):
     Args:
         func (_type_): _description_
     """
-    def wrapper(*args, **kwargs):
+
+    def wrapper(*args, **kwargs) -> None:
         print("Something is happening before the function is called.")
         result = func(*args, **kwargs)
         print("Something is happening after the function is called.")
         return result
+
     return wrapper
+
 
 @my_decorator
 def say_hello(name) -> None:
@@ -19,5 +22,6 @@ def say_hello(name) -> None:
         name (_type_): _description_
     """
     print(f"Hello, {name}!")
+
 
 say_hello("Alice")
