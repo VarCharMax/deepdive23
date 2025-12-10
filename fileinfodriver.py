@@ -78,7 +78,7 @@ class FileInfoDriver:
 
 
 if __name__ == "__main__":
-    FILEDIR = "/Users/rohanparkes/tmp"
+    FILEDIR = ""
     if os.name == "nt":  # Windows
         FILEDIR = "C:\\temp"
     if os.name == "posix":  # Mac OS
