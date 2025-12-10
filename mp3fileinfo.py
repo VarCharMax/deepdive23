@@ -1,6 +1,33 @@
 """_summary_"""
 
+import json
 from fileinfo import FileInfo, stripnulls
+
+
+def genrefromcode(data: bytes) -> str:
+    """_summary_
+
+    Args:
+        data (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
+    gencode: str = str(ord(data))
+
+    if gencode == "255":
+        # no genre listed
+        return "Unknown"
+
+    try:
+        with open("genre.json", "r", encoding="utf-8") as gtext:
+            genredict = json.loads(gtext.read())
+            if gencode in genredict:
+                return genredict[gencode]
+    except IOError:
+        return ""
+
+    return ""
 
 
 class MP3FileInfo(FileInfo):
@@ -12,7 +39,7 @@ class MP3FileInfo(FileInfo):
         "album": (63, 93, stripnulls),
         "year": (93, 97, stripnulls),
         "comment": (97, 126, stripnulls),
-        "genre": (127, 128, ord),
+        "genre": (127, 128, genrefromcode),
     }
 
     def __parse(self, filename) -> None:
@@ -27,7 +54,7 @@ class MP3FileInfo(FileInfo):
                     # Dictionary with string key, tuple value of (start, end, parsefunc).
                     for tag, (start, end, parsefunc) in self.tagDataMap.items():
                         # Call back to __setitem__ to add key-value pair to dictionary.
-                        self[tag] = parsefunc(tagdata[start:end].decode())
+                        self[tag] = parsefunc(tagdata[start:end])
         except IOError:
             pass
 

@@ -14,6 +14,6 @@ class FileInfo(dict):
         self["name"] = filename
 
 
-def stripnulls(data: bytes) -> bytes:
+def stripnulls(data: bytes) -> str:
     "strip whitespace and nulls"
-    return data.replace(b"\00", b" ").strip()
+    return data.decode().replace("\00", " ").strip()
