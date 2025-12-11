@@ -18,6 +18,8 @@ TODO: Make driver agnostic as to file extensions.
       with its resources with each loop.
 """
 
+# pylint: disable=C0103
+
 import sys
 import os
 import importlib.util
@@ -29,18 +31,19 @@ from fileinfo import FileInfo
 class FileInfoDriver:
     """_summary_"""
 
-    def __import_from_path(self, module_name, file_path) -> ModuleType:
+    def __import_from_path(self, module_name: str, file_path: str) -> ModuleType:
         """Import a module given its name and file path."""
+        module_name = module_name.lower()
         spec = importlib.util.spec_from_file_location(module_name, file_path)
         if spec:
             module = importlib.util.module_from_spec(spec)
             # Add to internal imported modules list.
-            sys.modules[module_name.lower()] = module
+            sys.modules[module_name] = module
             spec.loader.exec_module(module)  # type: ignore
             return module
         raise ModuleNotFoundError()
 
-    def listdirectory(self, directory, fileextlist) -> list[FileInfo]:
+    def listdirectory(self, directory: str, fileextlist: list[str]) -> list[FileInfo]:
         "get list of dictionaries containing meta info for files of specified extension"
         # Get list of files in directory.
         filelist = [os.path.normcase(f) for f in os.listdir(directory)]
@@ -51,10 +54,10 @@ class FileInfoDriver:
             if os.path.splitext(f)[1] in fileextlist
         ]
 
-        def file_ext(path) -> str:
+        def file_ext(path: str) -> str:
             return os.path.splitext(path)[1].upper()[1:]
 
-        def getfileinfoclass(filename) -> type[FileInfo]:
+        def getfileinfoclass(filename: str) -> type[FileInfo]:
             # e.g. .mp3 -> MP3FileInfo
             subclass = Template("${ext}FileInfo").substitute(ext=file_ext(filename))
             modulename = subclass.lower()  # e.g. mp3fileinfo
@@ -80,15 +83,15 @@ class FileInfoDriver:
 
 
 if __name__ == "__main__":
-    FILEDIR = ""
+    filedir = ""
     if os.name == "nt":  # Windows
-        FILEDIR = "C:\\temp"
+        filedir = "C:\\temp"
     if os.name == "posix":  # Mac OS
         FILEDIR = os.path.join(os.path.expanduser("~"), "tmp")
 
-    if FILEDIR != "":
+    if filedir:
         # info is subclassed FileInfo dictionary containing file metadata.
         driver = FileInfoDriver()
-        for info in driver.listdirectory(FILEDIR, [".mp3"]):
+        for info in driver.listdirectory(filedir, [".mp3"]):
             print("\n".join([f"{k}={v}" for (k, v) in info.items()]))
             print()
