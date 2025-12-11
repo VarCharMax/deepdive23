@@ -21,10 +21,10 @@ def stripnulls(data: bytes) -> bytes:
     return data.replace(b"\x00", b" ").strip()
 
 
-class FileInfo(dict):
+class FileInfo(dict[str, str]):
     """Initialize this parent class key ["name"] with filename value."""
 
-    def __init__(self, filename=None) -> None:
+    def __init__(self, filename: str) -> None:
         """This implementation does not override dict __init()__, which expects a k,v pair.
         We just redefine the init here for our own purposes."""
         self["name"] = filename
