@@ -5,7 +5,8 @@ Returns:
 """
 
 import re
-import urllib
+import urllib.error
+import urllib.request
 import webbrowser
 from basehtmlprocessor import BaseHTMLProcessor
 
@@ -20,7 +21,7 @@ class Dialectizer(BaseHTMLProcessor):
         _type_: _description_
     """
 
-    subs = ()
+    subs: tuple[tuple[str, ...], ...] = ()
 
     def reset(self):
         """extend (called from __init__ in ancestor)"""
@@ -154,14 +155,17 @@ class OldeDialectizer(Dialectizer):
     )
 
 
-def translate(url, dialectName="chef"):
+def translate(url, dialectname="chef") -> bytes:
     """fetch URL and translate using dialect
     dialect in ("chef", "fudd", "olde")"""
+    htmlsource = ""
+    try:
+        with urllib.request.urlopen(url) as response:
+            htmlsource = response.read()
+    except urllib.error.URLError as e:
+        print(f"Error fetching URL: {e.reason}")
 
-    sock = urllib.urlopen(url)
-    htmlsource = sock.read()
-    sock.close()
-    parsername = "%sDialectizer" % dialectName.capitalize()
+    parsername = f"{dialectname.capitalize()}Dialectizer"
     parserclass = globals()[parsername]
     parser = parserclass()
     parser.feed(htmlsource)
@@ -169,13 +173,12 @@ def translate(url, dialectName="chef"):
     return parser.output()
 
 
-def test(url):
+def test(url) -> None:
     """test all dialects against URL"""
     for dialect in ("chef", "fudd", "olde"):
-        outfile = "%s.html" % dialect
-        fsock = open(outfile, "wb")
-        fsock.write(translate(url, dialect))
-        fsock.close()
+        outfile = f"{dialect}.html"
+        with open(outfile, "wb") as fsock:
+            fsock.write(translate(url, dialect))
 
         webbrowser.open_new(outfile)
 

@@ -21,7 +21,7 @@ def dynamic_import_from_file(module_name: str, file_path: str):
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module  # Add the module to sys.modules
-    spec.loader.exec_module(module)
+    spec.loader.exec_module(module)  # type: ignore
     return module
 
 

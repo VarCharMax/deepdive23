@@ -6,14 +6,13 @@ Returns:
 
 import html.entities
 import html.parser
-from typing import LiteralString
 
 
 class BaseHTMLProcessor(html.parser.HTMLParser):
     """_summary_
 
     Args:
-        SGMLParser (_type_): _description_
+        HTMLParser (_type_): _description_
     """
 
     def reset(self) -> None:
@@ -36,7 +35,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         # to ensure that it will pass through this parser unaltered (in handle_comment).
         """
         strattrs = "".join([f' {key}="{value}"' for key, value in attrs])
-        self.pieces.append("<%(tag)s%(strattrs)s>" % locals())
+        self.pieces.append(f"<{locals()['tag']}{locals()['strattrs']}>")
 
     def handle_endtag(self, tag) -> None:
         """
@@ -46,7 +45,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
             tag (_type_): _description_
         """
         # Reconstruct the original end tag.
-        self.pieces.append("</%(tag)s>" % locals())
+        self.pieces.append(f"</{locals()['tag']}>")
 
     def handle_charref(self, name) -> None:
         """
@@ -57,12 +56,12 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         """
 
         # Reconstruct the original character reference.
-        self.pieces.append("&#%(ref)s;" % locals())
+        self.pieces.append(f"&#{locals()['name']};")
 
     def handle_entityref(self, name) -> None:
-        """called for each entity reference, e.g. for "&copy;", ref will be "copy"""
+        """called for each entity reference, e.g. for "&copy;", name will be "copy"""
         # Reconstruct the original entity reference.
-        self.pieces.append("&%(ref)s" % locals())
+        self.pieces.append(f"&{locals()['name']}")
         # standard HTML entities are closed with a semicolon; other entities are not
         if name in html.entities.html5:
             self.pieces.append(";")
@@ -79,20 +78,22 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         # It is especially important that the source document enclose client−side
         # code (like Javascript) within comments so it can pass through this
         # processor undisturbed; see comments in unknown_starttag for details."""
-        self.pieces.append("<!--%(text)s-->" % locals())
+        self.pieces.append(f"<!--{locals()['data']}-->")
 
     def handle_pi(self, data) -> None:
         """called for each processing instruction, e.g. <?instruction>"""
         # Reconstruct original processing instruction.
-        self.pieces.append("<?%(text)s>" % locals())
+        self.pieces.append(f"<?{locals()['data']}>")
 
     def handle_decl(self, decl) -> None:
-        """called for the DOCTYPE, if present, e.g.
-        # <!DOCTYPE html PUBLIC "−//W3C//DTD HTML 4.01 Transitional//EN"
-        #     "http://www.w3.org/TR/html4/loose.dtd">"""
+        """
+        called for the DOCTYPE, if present, e.g.
+        <!DOCTYPE html PUBLIC "−//W3C//DTD HTML 4.01 Transitional//EN"
+          "http://www.w3.org/TR/html4/loose.dtd">
+        """
         # Reconstruct original DOCTYPE
-        self.pieces.append("<!%(text)s>" % locals())
+        self.pieces.append(f"<!{locals()['decl']}>")
 
-    def output(self) -> LiteralString:
+    def output(self) -> str:
         """Return processed HTML as a single string"""
         return "".join(self.pieces)
