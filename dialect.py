@@ -158,6 +158,7 @@ class OldeDialectizer(Dialectizer):
 def translate(url, dialectname="chef") -> str:
     """fetch URL and translate using dialect
     dialect in ("chef", "fudd", "olde")"""
+
     html = ""
 
     try:
