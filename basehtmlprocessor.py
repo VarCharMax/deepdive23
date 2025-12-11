@@ -4,6 +4,8 @@ Returns:
     _type_: _description_
 """
 
+# pylint: disable=W0641
+
 import html.entities
 import html.parser
 
