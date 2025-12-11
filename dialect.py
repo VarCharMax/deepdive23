@@ -8,6 +8,7 @@ import re
 import urllib.error
 import urllib.request
 import webbrowser
+import chardet
 from basehtmlprocessor import BaseHTMLProcessor
 
 
@@ -42,8 +43,10 @@ class Dialectizer(BaseHTMLProcessor):
         self.verbatim -= 1
 
     def handle_data(self, data) -> None:
-        """override
-        called for every block of text in HTML source"""
+        """
+        override
+        called for every block of text in HTML source
+        """
         # If in verbatim mode, save text unaltered;
         # otherwise process the text with a series of substitutions
         self.pieces.append(self.verbatim and data or self.process(data))
@@ -58,7 +61,8 @@ class Dialectizer(BaseHTMLProcessor):
 
 
 class ChefDialectizer(Dialectizer):
-    """convert HTML to Swedish Chef-speak
+    """
+    convert HTML to Swedish Chef-speak
     based on the classic chef.x, copyright (c) 1992, 1993 John Hagerman
     """
 
@@ -156,15 +160,20 @@ class OldeDialectizer(Dialectizer):
 
 
 def translate(url, dialectname="chef") -> str:
-    """fetch URL and translate using dialect
-    dialect in ("chef", "fudd", "olde")"""
+    """
+    fetch URL and translate using dialect
+    dialect in ("chef", "fudd", "olde")
+    """
 
     html = ""
 
     try:
         with urllib.request.urlopen(url) as response:
             htmlsource = response.read()
-            html = htmlsource.decode("utf-8")
+            result = chardet.detect(htmlsource)
+            encoding = result["encoding"]
+            if encoding is not None:
+                html = htmlsource.decode(encoding)
     except urllib.error.URLError as e:
         print(f"Error fetching URL: {e.reason}")
 
@@ -187,4 +196,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://example.com/")
+    test("https://motherfuckingwebsite.com/")
