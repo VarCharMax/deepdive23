@@ -22,12 +22,10 @@ def genrefromcode(data: bytes) -> str:
             genredict = json.loads(gtext.read())
             if gencode in genredict:
                 return genredict[gencode]
-            else:
-                return "Unknown"
+
+            return "Unknown"
     except IOError:
         return "Error"
-
-    return ""
 
 
 class MP3FileInfo(FileInfo):
@@ -42,7 +40,7 @@ class MP3FileInfo(FileInfo):
         "genre": (127, 128, genrefromcode),
     }
 
-    def __parse(self, filename) -> None:
+    def __parse(self, filename: str) -> None:
         "parse ID3v1.0 tags from MP3 file"
         self.clear()
         try:
@@ -58,7 +56,7 @@ class MP3FileInfo(FileInfo):
         except IOError:
             pass
 
-    def __setitem__(self, key, item) -> None:
+    def __setitem__(self, key: str, item: str) -> None:
         """Called after parent dictionary is initialised with first key ["name"].
             Then goes on to parse additional metadata.
         Args:
