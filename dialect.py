@@ -23,13 +23,13 @@ class Dialectizer(BaseHTMLProcessor):
 
     subs: tuple[tuple[str, ...], ...] = ()
 
-    def reset(self):
+    def reset(self) -> None:
         """extend (called from __init__ in ancestor)"""
         # Reset all data attributes
         self.verbatim = 0
         BaseHTMLProcessor.reset(self)
 
-    def start_pre(self, attrs):
+    def start_pre(self, attrs) -> None:
         """called for every <pre> tag in HTML source"""
         # Increment verbatim mode count, then handle tag like normal
         self.verbatim += 1
@@ -41,14 +41,14 @@ class Dialectizer(BaseHTMLProcessor):
         self.handle_endtag("pre")
         self.verbatim -= 1
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         """override
         called for every block of text in HTML source"""
         # If in verbatim mode, save text unaltered;
         # otherwise process the text with a series of substitutions
         self.pieces.append(self.verbatim and data or self.process(data))
 
-    def process(self, text):
+    def process(self, text) -> str:
         """called from handle_data"""
         # Process text block by performing series of regular expression
         # substitutions (actual substitions are defined in descendant)
@@ -58,7 +58,7 @@ class Dialectizer(BaseHTMLProcessor):
 
 
 class ChefDialectizer(Dialectizer):
-    """convert HTML to Swedish Chef−speak
+    """convert HTML to Swedish Chef-speak
     based on the classic chef.x, copyright (c) 1992, 1993 John Hagerman
     """
 
@@ -155,20 +155,30 @@ class OldeDialectizer(Dialectizer):
     )
 
 
-def translate(url, dialectname="chef") -> bytes:
+def translate(url, dialectname="chef") -> str:
     """fetch URL and translate using dialect
     dialect in ("chef", "fudd", "olde")"""
-    htmlsource = ""
-    try:
-        with urllib.request.urlopen(url) as response:
-            htmlsource = response.read()
-    except urllib.error.URLError as e:
-        print(f"Error fetching URL: {e.reason}")
+    html = """
+        <html>
+        <head><title>Test Page</title></head>
+        <body>
+        <!-- This is a comment -->
+        <h1>Hello, world!</h1>
+        <p>This is some data in a paragraph.</p>
+        </body>
+        </html>"""
+
+    # try:
+    #    with urllib.request.urlopen(url) as response:
+    #        htmlsource = response.read()
+    #        html = htmlsource.decode("utf-8")
+    # except urllib.error.URLError as e:
+    #    print(f"Error fetching URL: {e.reason}")
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
     parserclass = globals()[parsername]
     parser = parserclass()
-    parser.feed(htmlsource)
+    parser.feed(html)
     parser.close()
     return parser.output()
 
@@ -177,11 +187,11 @@ def test(url) -> None:
     """test all dialects against URL"""
     for dialect in ("chef", "fudd", "olde"):
         outfile = f"{dialect}.html"
-        with open(outfile, "wb") as fsock:
+        with open(outfile, "w", encoding="utf-8") as fsock:
             fsock.write(translate(url, dialect))
 
         webbrowser.open_new(outfile)
 
 
 if __name__ == "__main__":
-    test("http://diveintopython.org/odbchelper_list.html")
+    test("https://www.ringing.info/nigel-taylor/TEMPS4.html")
