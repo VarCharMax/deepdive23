@@ -155,7 +155,7 @@ class OldeDialectizer(Dialectizer):
     )
 
 
-def translate(url, dialectname="chef") -> str:
+def translate(url, dialectname="chef", debug=False) -> str:
     """fetch URL and translate using dialect
     dialect in ("chef", "fudd", "olde")"""
     html = """
@@ -168,12 +168,13 @@ def translate(url, dialectname="chef") -> str:
         </body>
         </html>"""
 
-    # try:
-    #    with urllib.request.urlopen(url) as response:
-    #        htmlsource = response.read()
-    #        html = htmlsource.decode("utf-8")
-    # except urllib.error.URLError as e:
-    #    print(f"Error fetching URL: {e.reason}")
+    if not debug:
+        try:
+            with urllib.request.urlopen(url) as response:
+                htmlsource = response.read()
+                html = htmlsource.decode("utf-8")
+        except urllib.error.URLError as e:
+            print(f"Error fetching URL: {e.reason}")
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
     parserclass = globals()[parsername]
@@ -188,7 +189,7 @@ def test(url) -> None:
     for dialect in ("chef", "fudd", "olde"):
         outfile = f"{dialect}.html"
         with open(outfile, "w", encoding="utf-8") as fsock:
-            fsock.write(translate(url, dialect))
+            fsock.write(translate(url, dialect, True))
 
         webbrowser.open_new(outfile)
 
