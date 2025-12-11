@@ -155,26 +155,17 @@ class OldeDialectizer(Dialectizer):
     )
 
 
-def translate(url, dialectname="chef", debug=False) -> str:
+def translate(url, dialectname="chef") -> str:
     """fetch URL and translate using dialect
     dialect in ("chef", "fudd", "olde")"""
-    html = """
-        <html>
-        <head><title>Test Page</title></head>
-        <body>
-        <!-- This is a comment -->
-        <h1>Hello, world!</h1>
-        <p>This is some data in a paragraph.</p>
-        </body>
-        </html>"""
+    html = ""
 
-    if not debug:
-        try:
-            with urllib.request.urlopen(url) as response:
-                htmlsource = response.read()
-                html = htmlsource.decode("utf-8")
-        except urllib.error.URLError as e:
-            print(f"Error fetching URL: {e.reason}")
+    try:
+        with urllib.request.urlopen(url) as response:
+            htmlsource = response.read()
+            html = htmlsource.decode("utf-8")
+    except urllib.error.URLError as e:
+        print(f"Error fetching URL: {e.reason}")
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
     parserclass = globals()[parsername]
@@ -189,10 +180,10 @@ def test(url) -> None:
     for dialect in ("chef", "fudd", "olde"):
         outfile = f"{dialect}.html"
         with open(outfile, "w", encoding="utf-8") as fsock:
-            fsock.write(translate(url, dialect, True))
+            fsock.write(translate(url, dialect))
 
         webbrowser.open_new(outfile)
 
 
 if __name__ == "__main__":
-    test("https://www.ringing.info/nigel-taylor/TEMPS4.html")
+    test("https://example.com/")
