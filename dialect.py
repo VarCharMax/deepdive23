@@ -1,5 +1,6 @@
 """_summary_"""
 
+import os
 import re
 import sys
 import urllib.error
@@ -199,8 +200,17 @@ def test(url) -> None:
         outfile = f"{dialect}.html"
         with open(outfile, "w", encoding="utf-8") as fsock:
             fsock.write(translate(url, dialect))
-
-        webbrowser.open_new(outfile)
+        try:
+            if os.name == "posix":
+                chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
+                safari_path = "open -na /Applications/Safari.app %s"
+                browser = webbrowser.get(chrome_path)
+                outfile = "file://" + os.path.abspath(outfile)
+                browser.open_new_tab(outfile)
+            else:
+                webbrowser.open_new(outfile)
+        except webbrowser.Error:
+            pass
 
 
 if __name__ == "__main__":
