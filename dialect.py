@@ -5,6 +5,7 @@ Returns:
 """
 
 import re
+import sys
 import urllib.error
 import urllib.request
 import webbrowser
@@ -173,9 +174,17 @@ def translate(url, dialectname="chef") -> str:
             result = chardet.detect(htmlsource)
             encoding = result["encoding"]
             if encoding is not None:
-                html = htmlsource.decode(encoding)
+                try:
+                    html = htmlsource.decode(encoding)
+                except ValueError:
+                    print("Error decoding page.")
+                    sys.exit()
+            else:
+                print("Unable to determine page encoding ...")
+                sys.exit()
     except urllib.error.URLError as e:
         print(f"Error fetching URL: {e.reason}")
+        sys.exit()
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
     parserclass = globals()[parsername]
@@ -196,4 +205,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://motherfuckingwebsite.com/")
+    test("https://www.berkshirehathaway.com/")
