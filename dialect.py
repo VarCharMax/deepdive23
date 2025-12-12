@@ -1,8 +1,4 @@
-"""_summary_
-
-Returns:
-    _type_: _description_
-"""
+"""_summary_"""
 
 import re
 import sys
@@ -48,9 +44,12 @@ class Dialectizer(BaseHTMLProcessor):
         override
         called for every block of text in HTML source
         """
+
         # If in verbatim mode, save text unaltered;
         # otherwise process the text with a series of substitutions
-        self.pieces.append(self.verbatim and data or self.process(data))
+        self.pieces.append(
+            (self.verbatim or self.in_script) and data or self.process(data)
+        )
 
     def process(self, text) -> str:
         """called from handle_data"""

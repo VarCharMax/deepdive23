@@ -17,6 +17,10 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         HTMLParser (_type_): _description_
     """
 
+    def __init__(self):
+        super().__init__()
+        self.in_script = False
+
     def reset(self) -> None:
         """_summary_"""
         # extend (called by HTMLParser.__init__)
@@ -36,6 +40,9 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         # All non-HTML code must be enclosed in HTML comment tags (<!-- code -->)
         # to ensure that it will pass through this parser unaltered (in handle_comment).
         """
+        if tag == "script":
+            self.in_script = True
+
         strattrs = "".join([f' {key}="{value}"' for key, value in attrs])
         self.pieces.append(f"<{locals()['tag']}{locals()['strattrs']}>")
 
@@ -45,7 +52,11 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
 
         Args:
             tag (_type_): _description_
+
         """
+        if tag == "script":
+            self.in_script = False
+
         # Reconstruct the original end tag.
         self.pieces.append(f"</{locals()['tag']}>")
 
@@ -71,13 +82,14 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
     def handle_data(self, data) -> None:
         """called for each block of plain text, i.e. outside of any tag and
         # not containing any character or entity references"""
+
         # Store the original text verbatim.
         self.pieces.append(data)
 
     def handle_comment(self, data) -> None:
         """called for each HTML comment, e.g. <!-- insert Javascript code here -->
         # Reconstruct the original comment.
-        # It is especially important that the source document enclose client−side
+        # It is especially important that the source document enclose client-side
         # code (like Javascript) within comments so it can pass through this
         # processor undisturbed; see comments in unknown_starttag for details."""
         self.pieces.append(f"<!--{locals()['data']}-->")
@@ -90,7 +102,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
     def handle_decl(self, decl) -> None:
         """
         called for the DOCTYPE, if present, e.g.
-        <!DOCTYPE html PUBLIC "−//W3C//DTD HTML 4.01 Transitional//EN"
+        <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
         """
         # Reconstruct original DOCTYPE
