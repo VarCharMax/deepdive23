@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if os.name == "nt":  # Windows
         filedir = "C:\\temp"
     if os.name == "posix":  # Mac OS
-        FILEDIR = os.path.join(os.path.expanduser("~"), "tmp")
+        filedir = os.path.join(os.path.expanduser("~"), "tmp")
 
     if filedir:
         # info is subclassed FileInfo dictionary containing file metadata.
