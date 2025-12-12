@@ -171,8 +171,7 @@ def translate(url, dialectname="chef") -> str:
     try:
         with urllib.request.urlopen(url) as response:
             htmlsource = response.read()
-            result = chardet.detect(htmlsource)
-            encoding = result["encoding"]
+            encoding = chardet.detect(htmlsource).get("encoding")
             if encoding is not None:
                 try:
                     html = htmlsource.decode(encoding)
