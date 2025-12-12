@@ -33,12 +33,14 @@ class FileInfoDriver:
 
     def __import_from_path(self, module_name: str, file_path: str) -> ModuleType:
         """Import a module given its name and file path."""
+        # Modules don't seem to be case-sensitive - we could import it using the
+        # Pascal class name and it would still work, but this is more appropriate.
         module_name = module_name.lower()
         spec = importlib.util.spec_from_file_location(module_name, file_path)
         if spec:
             module = importlib.util.module_from_spec(spec)
             # Add to internal imported modules list.
-            sys.modules[module_name] = module
+            sys.modules[module.__name__] = module
             spec.loader.exec_module(module)  # type: ignore
             return module
         raise ModuleNotFoundError()
@@ -74,6 +76,7 @@ class FileInfoDriver:
                 except ModuleNotFoundError:
                     return FileInfo
 
+            # Find and return class type from module.
             return hasattr(module, subclass) and getattr(module, subclass) or FileInfo
 
         # Get custom dictionary object for specific file type,
