@@ -5,6 +5,17 @@
     }
   ],
   "settings": {
-    "python-envs.pythonProjects": []
+    "python-envs.pythonProjects": [
+      {
+        "path": "fileinfodriver.py",
+        "envManager": "ms-python.python:venv",
+        "packageManager": "ms-python.python:pip"
+      },
+      {
+        "path": "",
+        "envManager": "ms-python.python:venv",
+        "packageManager": "ms-python.python:pip"
+      }
+    ]
   }
 }

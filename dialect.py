@@ -19,7 +19,8 @@ class Dialectizer(BaseHTMLProcessor):
         _type_: _description_
     """
 
-    subs: tuple[tuple[str, ...], ...] = ()
+    # tuple consisting of one or more tuples with two str members.
+    subs: tuple[tuple[str, str], ...] = ()
 
     def reset(self) -> None:
         """extend (called from __init__ in ancestor)"""
@@ -45,7 +46,7 @@ class Dialectizer(BaseHTMLProcessor):
         called for every block of text in HTML source
         """
 
-        # If in verbatim mode, save text unaltered;
+        # If in verbatim mode, or processing a script, save text unaltered;
         # otherwise process the text with a series of substitutions
         self.pieces.append(
             (self.verbatim or self.in_script) and data or self.process(data)
@@ -92,7 +93,7 @@ class ChefDialectizer(Dialectizer):
         (r"V", r"F"),
         (r"w", r"w"),
         (r"W", r"W"),
-        (r"([a-z])[.]", r"\1.  Bork Bork Bork!"),
+        (r"([a-z])[.]", r"\1. Bork Bork Bork!"),
     )
 
 
