@@ -168,6 +168,7 @@ def translate(url, dialectname="chef") -> str:
         response = requests.get(url, timeout=30)
         html = response.text
     except requests.ConnectionError as e:
+        # except requests.RequestException as e:
         print(f"Connection refused: {e.errno}")
         sys.exit()
 
@@ -199,4 +200,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://www.berkshirehathaway.com/")
+    test("https://www.modartt.com/")
