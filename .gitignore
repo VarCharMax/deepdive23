@@ -186,4 +186,4 @@ cython_debug/
 # MS
 .vscode/
 
-.html
+*.html
