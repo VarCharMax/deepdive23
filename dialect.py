@@ -3,10 +3,8 @@
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 import webbrowser
-import chardet
+import requests
 from basehtmlprocessor import BaseHTMLProcessor
 
 
@@ -47,19 +45,17 @@ class Dialectizer(BaseHTMLProcessor):
         called for every block of text in HTML source
         """
 
+        def process(text) -> str:
+            """called from handle_data"""
+            # Process text block by performing series of regular expression
+            # substitutions (actual substitions are defined in descendant)
+            for frompattern, topattern in self.subs:
+                text = re.sub(frompattern, topattern, text)
+            return text
+
         # If in verbatim mode, or processing a script, save text unaltered;
         # otherwise process the text with a series of substitutions
-        self.pieces.append(
-            (self.verbatim or self.in_script) and data or self.process(data)
-        )
-
-    def process(self, text) -> str:
-        """called from handle_data"""
-        # Process text block by performing series of regular expression
-        # substitutions (actual substitions are defined in descendant)
-        for frompattern, topattern in self.subs:
-            text = re.sub(frompattern, topattern, text)
-        return text
+        self.pieces.append((self.verbatim or self.in_script) and data or process(data))
 
 
 class ChefDialectizer(Dialectizer):
@@ -168,22 +164,11 @@ def translate(url, dialectname="chef") -> str:
     """
 
     html = ""
-
     try:
-        with urllib.request.urlopen(url) as response:
-            htmlsource = response.read()
-            encoding = chardet.detect(htmlsource).get("encoding")
-            if encoding is not None:
-                try:
-                    html = htmlsource.decode(encoding)
-                except ValueError:
-                    print("Error decoding page.")
-                    sys.exit()
-            else:
-                print("Unable to determine page encoding ...")
-                sys.exit()
-    except urllib.error.URLError as e:
-        print(f"Error fetching URL: {e.reason}")
+        response = requests.get(url, timeout=30)
+        html = response.text
+    except requests.ConnectionError as e:
+        print(f"Connection refused: {e.errno}")
         sys.exit()
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
@@ -203,7 +188,7 @@ def test(url) -> None:
         try:
             if os.name == "posix":
                 chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
-                safari_path = "open -na /Applications/Safari.app %s"
+                # safari_path = "open -na /Applications/Safari.app %s"
                 browser = webbrowser.get(chrome_path)
                 outfile = "file://" + os.path.abspath(outfile)
                 browser.open_new_tab(outfile)
@@ -214,4 +199,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://motherfuckingwebsite.com/")
+    test("https://www.berkshirehathaway.com/")
