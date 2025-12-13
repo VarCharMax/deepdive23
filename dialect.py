@@ -167,9 +167,8 @@ def translate(url, dialectname="chef") -> str:
     try:
         response = requests.get(url, timeout=30)
         html = response.text
-    except requests.ConnectionError as e:
-        # except requests.RequestException as e:
-        print(f"Connection refused: {e.errno}")
+    except (requests.ConnectionError, requests.RequestException) as e:
+        print(f"Connection error: {e.__doc__}")
         sys.exit()
 
     parsername = f"{dialectname.capitalize()}Dialectizer"
