@@ -19,12 +19,12 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
 
     def __init__(self):
         super().__init__()
-        self.in_script = False
-        self.exclude_images = True
 
     def reset(self) -> None:
         """_summary_"""
         # extend (called by HTMLParser.__init__)
+        self.in_script = False
+        self.exclude_images = True
         self.pieces = []
         html.parser.HTMLParser.reset(self)
 
