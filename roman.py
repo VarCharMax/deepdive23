@@ -65,7 +65,7 @@ romanNumeralMap = (
 )
 
 
-def toroman(n):
+def toroman(n) -> str:
     """convert integer to Roman numeral"""
     if not 0 < n < 5000:
         raise OutOfRangeError("number out of range (must be 1..4999)")
@@ -97,7 +97,7 @@ romanNumeralPattern = re.compile(
 )
 
 
-def fromroman(s):
+def fromroman(s) -> int:
     """convert Roman numeral to integer"""
     if not s:
         raise InvalidRomanNumeralError("Input can not be blank")
