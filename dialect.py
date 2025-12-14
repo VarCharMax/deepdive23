@@ -24,20 +24,20 @@ class Dialectizer(BaseHTMLProcessor):
     def reset(self) -> None:
         """extend (called from __init__ in ancestor)"""
         # Reset all data attributes
-        self.verbatim = 0
+        self.verbatim = False
         BaseHTMLProcessor.reset(self)
 
     def start_pre(self, attrs) -> None:
         """called for every <pre> tag in HTML source"""
         # Increment verbatim mode count, then handle tag like normal
-        self.verbatim += 1
+        self.verbatim = True
         self.handle_starttag("pre", attrs)
 
-    def end_pre(self):
+    def end_pre(self) -> None:
         """called for every </pre> tag in HTML source"""
         # Decrement verbatim mode count
         self.handle_endtag("pre")
-        self.verbatim -= 1
+        self.verbatim = False
 
     def handle_data(self, data) -> None:
         """
@@ -55,7 +55,7 @@ class Dialectizer(BaseHTMLProcessor):
 
         # If in verbatim mode, or processing a script, save text unaltered;
         # otherwise process the text with a series of substitutions
-        self.pieces.append((self.verbatim or self.in_script) and data or process(data))
+        self.pieces.append(self.verbatim and data or process(data))
 
 
 class ChefDialectizer(Dialectizer):
