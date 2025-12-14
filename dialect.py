@@ -174,7 +174,7 @@ def translate(url, dialectname="chef") -> str:
     if html:
         parsername = f"{dialectname.capitalize()}Dialectizer"
         parserclass = globals()[parsername]
-        parser = parserclass()
+        parser = parserclass(convert_charrefs=False)
         parser.feed(html)
         parser.close()
         return parser.output()
@@ -203,4 +203,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://motherfuckingwebsite.com/")
+    test("https://modartt.com/")

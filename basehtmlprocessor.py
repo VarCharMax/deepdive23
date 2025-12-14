@@ -17,8 +17,10 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         HTMLParser (_type_): _description_
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, convert_charrefs=False):
+        super().__init__(convert_charrefs=convert_charrefs)
+        self.in_script = False
+        self.exclude_images = True
 
     def reset(self) -> None:
         """_summary_"""
