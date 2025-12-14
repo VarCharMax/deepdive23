@@ -171,12 +171,16 @@ def translate(url, dialectname="chef") -> str:
         print(f"Connection error: {e.__doc__}")
         sys.exit()
 
-    parsername = f"{dialectname.capitalize()}Dialectizer"
-    parserclass = globals()[parsername]
-    parser = parserclass()
-    parser.feed(html)
-    parser.close()
-    return parser.output()
+    if html:
+        parsername = f"{dialectname.capitalize()}Dialectizer"
+        parserclass = globals()[parsername]
+        parser = parserclass()
+        parser.feed(html)
+        parser.close()
+        return parser.output()
+
+    print("URL contains no data.")
+    return html
 
 
 def test(url) -> None:

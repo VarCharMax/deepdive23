@@ -20,6 +20,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
     def __init__(self):
         super().__init__()
         self.in_script = False
+        self.exclude_images = True
 
     def reset(self) -> None:
         """_summary_"""
@@ -40,6 +41,9 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         # All non-HTML code must be enclosed in HTML comment tags (<!-- code -->)
         # to ensure that it will pass through this parser unaltered (in handle_comment).
         """
+        if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
+            return
+
         if tag == "script":
             self.in_script = True
 
@@ -54,6 +58,9 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
             tag (_type_): _description_
 
         """
+        if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
+            return
+
         if tag == "script":
             self.in_script = False
 
