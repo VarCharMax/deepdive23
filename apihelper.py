@@ -4,7 +4,7 @@ Takes module, class, list, dictionary, or string."""
 import inspect
 
 
-def info(obj, spacing=10, collapse=1) -> None:
+def info(obj, spacing=10, collapse=1, ignore_special=True) -> None:
     """Print methods and doc strings.
     Takes module, class, list, dictionary, or string.
 
@@ -15,11 +15,14 @@ def info(obj, spacing=10, collapse=1) -> None:
     """
 
     # This is the closest I can get to the author's original intent in Py3.
-    # Callable doesn't filter out the __< >__ methods.
+    # Callable doesn't filter out the special methods.
+
+    ignore_special = not ignore_special
+
     methodlist = [
         n
         for (n, v) in inspect.getmembers(obj)
-        if callable(v) and not n.startswith("__")
+        if callable(v) and ignore_special or not n.startswith("__")
     ]
 
     processfunc = (lambda s: " ".join(s.split())) if collapse else (lambda s: s)
