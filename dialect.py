@@ -199,4 +199,4 @@ def test(url) -> None:
 
 
 if __name__ == "__main__":
-    test("https://www.modartt.com/")
+    test("https://motherfuckingwebsite.com/")
