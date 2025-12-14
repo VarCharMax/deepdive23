@@ -21,6 +21,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         super().__init__(convert_charrefs=convert_charrefs)
         self.in_script = False
         self.exclude_images = True
+        self.verbatim = 0
 
     def reset(self) -> None:
         """_summary_"""
@@ -29,6 +30,12 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         self.exclude_images = True
         self.pieces = []
         html.parser.HTMLParser.reset(self)
+
+    def start_pre(self, attrs) -> None:
+        """called for every <pre> tag in HTML source"""
+
+    def end_pre(self) -> None:
+        """called for every </pre> tag in HTML source"""
 
     def handle_starttag(self, tag, attrs) -> None:
         """called for each start tag
@@ -46,8 +53,12 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
             return
 
+        if tag == "pre":
+            self.start_pre(attrs)
+            return
+
         if tag == "script":
-            self.in_script = True
+            self.verbatim = True
 
         strattrs = "".join([f' {key}="{value}"' for key, value in attrs])
         self.pieces.append(f"<{locals()['tag']}{locals()['strattrs']}>")
@@ -64,7 +75,11 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
             return
 
         if tag == "script":
-            self.in_script = False
+            self.verbatim = False
+
+        if tag == "pre":
+            self.end_pre()
+            return
 
         # Reconstruct the original end tag.
         self.pieces.append(f"</{locals()['tag']}>")
