@@ -17,7 +17,7 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         HTMLParser (_type_): _description_
     """
 
-    def __init__(self, convert_charrefs=False):
+    def __init__(self, convert_charrefs=False) -> None:
         super().__init__(convert_charrefs=convert_charrefs)
         self.in_script = False
         self.exclude_images = True

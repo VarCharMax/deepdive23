@@ -89,7 +89,7 @@ if __name__ == "__main__":
     filedir = ""
     if os.name == "nt":  # Windows
         filedir = "C:\\temp"
-    if os.name == "posix":  # Mac OS
+    if os.name == "posix":  # Mac OS or Linux
         filedir = os.path.join(os.path.expanduser("~"), "tmp")
 
     if filedir:

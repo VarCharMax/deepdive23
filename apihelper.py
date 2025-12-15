@@ -17,12 +17,13 @@ def info(obj, spacing=10, collapse=1, ignore_special=True) -> None:
     # This is the closest I can get to the author's original intent in Py3.
     # Callable doesn't filter out the special methods.
 
-    # ignore_special = not ignore_special
+    # Invert the value so that it works in the query
+    ignore_special = not ignore_special
 
     methodlist = [
         n
         for (n, v) in inspect.getmembers(obj)
-        if callable(v) and not ignore_special or not n.startswith("__")
+        if callable(v) and ignore_special or not n.startswith("__")
     ]
 
     processfunc = (lambda s: " ".join(s.split())) if collapse else (lambda s: s)
