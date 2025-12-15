@@ -27,18 +27,6 @@ class Dialectizer(BaseHTMLProcessor):
         self.verbatim = False
         BaseHTMLProcessor.reset(self)
 
-    def start_pre(self, attrs) -> None:
-        """called for every <pre> tag in HTML source"""
-        # Increment verbatim mode count, then handle tag like normal
-        self.verbatim = True
-        self.handle_starttag("pre", attrs)
-
-    def end_pre(self) -> None:
-        """called for every </pre> tag in HTML source"""
-        # Decrement verbatim mode count
-        self.handle_endtag("pre")
-        self.verbatim = False
-
     def handle_data(self, data) -> None:
         """
         override
@@ -164,6 +152,7 @@ def translate(url, dialectname="chef") -> str:
     """
 
     html = ""
+
     try:
         response = requests.get(url, timeout=30)
         html = response.text

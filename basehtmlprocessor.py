@@ -53,10 +53,6 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
             return
 
-        if tag == "pre":
-            self.start_pre(attrs)
-            return
-
         if tag == "script":
             self.verbatim = True
 
@@ -76,10 +72,6 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
 
         if tag == "script":
             self.verbatim = False
-
-        if tag == "pre":
-            self.end_pre()
-            return
 
         # Reconstruct the original end tag.
         self.pieces.append(f"</{locals()['tag']}>")
