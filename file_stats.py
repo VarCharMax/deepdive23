@@ -9,10 +9,16 @@ Returns:
 
 import os
 import glob
-from typing import Any
 
 
-def stat_to_dict(filestat) -> dict[str, Any]:
+def format_dict(stat_dict) -> str:
+
+    ret = "\n\t".join([f"{k}={v}" for (k, v) in stat_dict.items()])
+
+    return "\t" + ret
+
+
+def stat_to_dict(filestat) -> dict[str, int]:
     """
     Docstring for stat_to_dict
 
@@ -23,13 +29,17 @@ def stat_to_dict(filestat) -> dict[str, Any]:
     if not isinstance(filestat, os.stat_result):
         raise ValueError(f"argument must be os.stat_result, not {type(filestat)}")
 
-    return {
+    ret = {
         attr: getattr(filestat, attr)
         for attr in dir(filestat)
         if attr.startswith("st_")
     }
 
+    return ret
+
 
 if __name__ == "__main__":
-    metadata_dict = {f: stat_to_dict(os.stat(f)) for f in glob.glob("*info*.py")}
-    print(metadata_dict)
+    metadata_dict = {
+        f: format_dict(stat_to_dict(os.stat(f))) for f in glob.glob("fib.py")
+    }
+    print("".join([f"{k}:\n{v}" for (k, v) in metadata_dict.items()]))
