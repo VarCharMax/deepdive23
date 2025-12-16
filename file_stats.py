@@ -129,6 +129,11 @@ dict_methods = {
     "st_birthtime": ("File Created", secondstotime),
     "st_file_attributes": ("File Attributes", check_attributes),
     "st_reparse_tag": ("Reparse Type", int),
+    "st_blksize": ("Block Size", int),
+    "st_blocks": ("Blocks", int),
+    "st_flags": ("Flags", int),
+    "st_gen": ("Gen", int),
+    "st_rdev": ("Device", int),
 }
 
 
