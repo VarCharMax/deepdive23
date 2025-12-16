@@ -10,6 +10,7 @@ Returns:
 from datetime import datetime, timezone
 import os
 import glob
+import win32con
 
 
 def secondstotime(time_in_seconds) -> str:
@@ -20,7 +21,7 @@ def secondstotime(time_in_seconds) -> str:
     """
     tm = datetime.fromtimestamp(time_in_seconds, timezone.utc)
 
-    return f"{tm.day}/{tm.month}/{tm.year} {tm.hour}:{tm.minute}:{tm.second}"
+    return f"{str(tm.day)}/{str(tm.month)}/{str(tm.year)} {str(tm.hour)}:{str(tm.minute)}:{str(tm.second)}"
 
 
 def get_human_readable_size(size_bytes) -> str:
@@ -40,21 +41,43 @@ def get_human_readable_size(size_bytes) -> str:
     return f"{size_bytes:.2f} {units[i]}"
 
 
-dict_methods = {
-    "st_mode": ("File Mode", ord),
-    "st_ino": ("File Index", ord),
-    "st_dev": ("Device Id", ord),
-    "st_nlink": ("Hard Link Count", ord),
-    "st_uid": ("User Id", ord),
-    "st_gid": ("Group Id", ord),
-    "st_size": ("Size", get_human_readable_size),
-    "st_atime": ("Last Accessed", secondstotime),
-    "st_mtime": ("Last Modified", secondstotime),
-    "st_ctime": ("Metadata Changed", secondstotime),
-    "st_birthtime": ("File Created", secondstotime),
-    "st_file_attributes": ("File Attributes", ord),
-    "st_reparse_tag": ("Reparse Type", ord),
-}
+def check_attributes(attrs: int) -> str:
+    """_summary_
+
+    Args:
+        filepath (_type_): _description_
+    """
+    attribs = set()
+
+    try:
+        # Check for common attributes using bitwise AND and win32con constants
+        # If (attrs & CONSTANT) is non-zero, the attribute is set.
+
+        if attrs & win32con.FILE_ATTRIBUTE_READONLY:
+            attribs.add("Read-Only")
+        if attrs & win32con.FILE_ATTRIBUTE_HIDDEN:
+            attribs.add("Hidden")
+        if attrs & win32con.FILE_ATTRIBUTE_SYSTEM:
+            attribs.add("System")
+        if attrs & win32con.FILE_ATTRIBUTE_DIRECTORY:
+            attribs.add("Directory")
+        if attrs & win32con.FILE_ATTRIBUTE_ARCHIVE:
+            attribs.add("Archive")
+        if attrs & win32con.FILE_ATTRIBUTE_NORMAL:
+            attribs.add("Normal")
+        if attrs & win32con.FILE_ATTRIBUTE_TEMPORARY:
+            attribs.add("Temporary")
+        if attrs & win32con.FILE_ATTRIBUTE_COMPRESSED:
+            attribs.add("Compressed")
+        if attrs & win32con.FILE_ATTRIBUTE_ENCRYPTED:
+            attribs.add("Encrypted")
+
+        return ", ".join(list(attribs))
+
+    except Exception:
+        pass
+
+    return "Error checking attributes"
 
 
 def st_to_human(key, val) -> str:
@@ -69,6 +92,23 @@ def st_to_human(key, val) -> str:
     name, processfunc = dict_methods[key]
 
     return f"{name}: {processfunc(val)}"
+
+
+dict_methods = {
+    "st_mode": ("File Mode", int),
+    "st_ino": ("File Index", int),
+    "st_dev": ("Device Id", int),
+    "st_nlink": ("Hard Link Count", int),
+    "st_uid": ("User Id", int),
+    "st_gid": ("Group Id", int),
+    "st_size": ("Size", get_human_readable_size),
+    "st_atime": ("Last Accessed", secondstotime),
+    "st_mtime": ("Last Modified", secondstotime),
+    "st_ctime": ("Metadata Changed", secondstotime),
+    "st_birthtime": ("File Created", secondstotime),
+    "st_file_attributes": ("File Attributes", check_attributes),
+    "st_reparse_tag": ("Reparse Type", int),
+}
 
 
 def format_dict(stat_dict) -> str:
