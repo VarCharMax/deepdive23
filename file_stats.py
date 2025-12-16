@@ -9,8 +9,8 @@ Returns:
 
 from datetime import datetime
 import os
+import sys
 import glob
-import win32con
 
 
 def secondstotime(time_in_seconds) -> str:
@@ -45,37 +45,42 @@ def check_attributes(attrs: int) -> str:
     Args:
         filepath (_type_): _description_
     """
-    attribs = set()
 
-    try:
-        # Check for common attributes using bitwise AND and win32con constants
-        # If (attrs & CONSTANT) is non-zero, the attribute is set.
+    # pylint: disable=import-outside-toplevel
+    if sys.platform == "win32":
+        import win32con
 
-        if attrs & win32con.FILE_ATTRIBUTE_READONLY:
-            attribs.add("Read-Only")
-        if attrs & win32con.FILE_ATTRIBUTE_HIDDEN:
-            attribs.add("Hidden")
-        if attrs & win32con.FILE_ATTRIBUTE_SYSTEM:
-            attribs.add("System")
-        if attrs & win32con.FILE_ATTRIBUTE_DIRECTORY:
-            attribs.add("Directory")
-        if attrs & win32con.FILE_ATTRIBUTE_ARCHIVE:
-            attribs.add("Archive")
-        if attrs & win32con.FILE_ATTRIBUTE_NORMAL:
-            attribs.add("Normal")
-        if attrs & win32con.FILE_ATTRIBUTE_TEMPORARY:
-            attribs.add("Temporary")
-        if attrs & win32con.FILE_ATTRIBUTE_COMPRESSED:
-            attribs.add("Compressed")
-        if attrs & win32con.FILE_ATTRIBUTE_ENCRYPTED:
-            attribs.add("Encrypted")
+        attribs = set()
 
-        return ", ".join(list(attribs))
+        try:
+            # Check for common attributes using bitwise AND and win32con constants
+            # If (attrs & CONSTANT) is non-zero, the attribute is set.
 
-    except Exception:
-        pass
+            if attrs & win32con.FILE_ATTRIBUTE_READONLY:
+                attribs.add("Read-Only")
+            if attrs & win32con.FILE_ATTRIBUTE_HIDDEN:
+                attribs.add("Hidden")
+            if attrs & win32con.FILE_ATTRIBUTE_SYSTEM:
+                attribs.add("System")
+            if attrs & win32con.FILE_ATTRIBUTE_DIRECTORY:
+                attribs.add("Directory")
+            if attrs & win32con.FILE_ATTRIBUTE_ARCHIVE:
+                attribs.add("Archive")
+            if attrs & win32con.FILE_ATTRIBUTE_NORMAL:
+                attribs.add("Normal")
+            if attrs & win32con.FILE_ATTRIBUTE_TEMPORARY:
+                attribs.add("Temporary")
+            if attrs & win32con.FILE_ATTRIBUTE_COMPRESSED:
+                attribs.add("Compressed")
+            if attrs & win32con.FILE_ATTRIBUTE_ENCRYPTED:
+                attribs.add("Encrypted")
 
-    return "Error checking attributes"
+            return ", ".join(list(attribs))
+
+        except Exception:
+            pass
+
+    return ""
 
 
 def st_to_human(key, val) -> str:
