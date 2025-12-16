@@ -185,8 +185,10 @@ def test(url) -> None:
                 outfile = "file://" + os.path.abspath(outfile)
                 browser.open_new_tab(outfile)
             if sys.platform == "linux":
-                # chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
-                pass
+                chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
+                browser = webbrowser.get(chrome_path)
+                outfile = "file://" + os.path.abspath(outfile)
+                # browser.open_new_tab(outfile)
             if sys.platform == "win32":
                 webbrowser.open_new(outfile)
         except webbrowser.Error:
