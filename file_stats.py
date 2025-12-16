@@ -12,7 +12,14 @@ import glob
 
 
 def format_dict(stat_dict) -> str:
+    """_summary_
 
+    Args:
+        stat_dict (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
     ret = "\n\t".join([f"{k}={v}" for (k, v) in stat_dict.items()])
 
     return "\t" + ret
