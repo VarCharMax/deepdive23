@@ -48,7 +48,7 @@ def check_attributes(attrs: int) -> str:
 
     # pylint: disable=import-outside-toplevel
     if sys.platform == "win32":
-        import win32con
+        import win32con  # pylint: disable=import-error
 
         attribs = set()
 
