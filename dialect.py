@@ -1,8 +1,8 @@
 """_summary_"""
 
-import os
 import re
 import sys
+import os
 import webbrowser
 import requests
 from basehtmlprocessor import BaseHTMLProcessor
@@ -179,13 +179,15 @@ def test(url) -> None:
         with open(outfile, "w", encoding="utf-8") as fsock:
             fsock.write(translate(url, dialect))
         try:
-            if os.name == "posix":
-                chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
-                # safari_path = "open -na /Applications/Safari.app %s"
-                browser = webbrowser.get(chrome_path)
+            if sys.platform == "darwin":
+                safari_path = "open -na /Applications/Safari.app %s"
+                browser = webbrowser.get(safari_path)
                 outfile = "file://" + os.path.abspath(outfile)
                 browser.open_new_tab(outfile)
-            else:
+            if sys.platform == "linux":
+                # chrome_path = "open -na /Applications/Google\\ Chrome.app --args %s"
+                pass
+            if sys.platform == "win32":
                 webbrowser.open_new(outfile)
         except webbrowser.Error:
             pass
