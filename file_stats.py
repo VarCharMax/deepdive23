@@ -9,6 +9,36 @@ Returns:
 
 import os
 import glob
+import time
+
+
+def secondstotime() -> str:
+    """_summary_
+
+    Returns:
+        str: _description_
+    """
+    tm = time.localtime()
+    return f"{tm.tm_yday}/{tm.tm_mon}/{tm.tm_year} {tm.tm_hour}:{tm.tm_min}:{tm.tm_sec}"
+
+
+def formatbytes(byte_count) -> str:
+    return ""
+
+
+dict_methods = {
+    "st_mode": ("File Mode", ord),
+    "st_ino": ("File Index", ord),
+    "st_dev": ("Device Id", ord),
+    "st_nlink": ("Hard Link Count", ord),
+    "st_uid": ("User Id", ord),
+    "st_gid": ("Group Id", ord),
+    "st_size": ("Size", formatbytes),
+    "st_atime": ("Lst Accessed", secondstotime),
+    "st_mtime": ("Last Modified", secondstotime),
+    "st_ctime": ("Metadata Changed", secondstotime),
+    "st_birthtime": ("File Created", secondstotime),
+}
 
 
 def format_dict(stat_dict) -> str:
@@ -36,10 +66,11 @@ def stat_to_dict(filestat) -> dict[str, int]:
     if not isinstance(filestat, os.stat_result):
         raise ValueError(f"argument must be os.stat_result, not {type(filestat)}")
 
+    # Dictionary comprehension. Exclude newer nanosecond properties.
     ret = {
         attr: getattr(filestat, attr)
         for attr in dir(filestat)
-        if attr.startswith("st_")
+        if attr.startswith("st_") and not attr.endswith("_ns")
     }
 
     return ret
