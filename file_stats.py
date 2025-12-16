@@ -7,7 +7,7 @@ Returns:
     _type_: _description_
 """
 
-from datetime import datetime, timezone
+from datetime import datetime
 import os
 import glob
 import win32con
@@ -19,9 +19,7 @@ def secondstotime(time_in_seconds) -> str:
     Returns:
         str: _description_
     """
-    tm = datetime.fromtimestamp(time_in_seconds, timezone.utc)
-
-    return f"{str(tm.day)}/{str(tm.month)}/{str(tm.year)} {str(tm.hour)}:{str(tm.minute)}:{str(tm.second)}"
+    return datetime.fromtimestamp(time_in_seconds).strftime("%d/%m/%Y %I:%M:%S %p")
 
 
 def get_human_readable_size(size_bytes) -> str:
@@ -125,7 +123,7 @@ def format_dict(stat_dict) -> str:
     return "\t" + ret
 
 
-def stat_to_dict(filestat) -> dict[str, int]:
+def stats_to_dict(filestat) -> dict[str, int]:
     """
     Docstring for stat_to_dict
 
@@ -148,6 +146,6 @@ def stat_to_dict(filestat) -> dict[str, int]:
 
 if __name__ == "__main__":
     metadata_dict = {
-        f: format_dict(stat_to_dict(os.stat(f))) for f in glob.glob("fib.py")
+        f: format_dict(stats_to_dict(os.stat(f))) for f in glob.glob("fib.py")
     }
     print("".join([f"{k}:\n{v}" for (k, v) in metadata_dict.items()]))
