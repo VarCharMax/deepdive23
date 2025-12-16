@@ -37,6 +37,17 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
     def end_pre(self) -> None:
         """called for every </pre> tag in HTML source"""
 
+    def handle_startendtag(self, tag, attrs) -> None:
+        """Fired for empty tags e.g. <br /> and
+        also <img>. Need to test this.
+
+        Args:
+            tag (_type_): _description_
+            attrs (_type_): _description_
+        """
+        strattrs = "".join([f' {key}="{value}"' for key, value in attrs])
+        self.pieces.append(f"<{locals()['tag']}{locals()['strattrs']}/>")
+
     def handle_starttag(self, tag, attrs) -> None:
         """called for each start tag
         # attrs is a list of (attr, value) tuples
@@ -50,11 +61,11 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
         # All non-HTML code must be enclosed in HTML comment tags (<!-- code -->)
         # to ensure that it will pass through this parser unaltered (in handle_comment).
         """
-        if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
+        if (tag.lower() == "video") and self.exclude_images:
             return
 
-        if tag == "script":
-            self.verbatim = True
+        if tag in ("script", "pre"):
+            self.verbatim += 1
 
         strattrs = "".join([f' {key}="{value}"' for key, value in attrs])
         self.pieces.append(f"<{locals()['tag']}{locals()['strattrs']}>")
@@ -67,11 +78,11 @@ class BaseHTMLProcessor(html.parser.HTMLParser):
             tag (_type_): _description_
 
         """
-        if (tag.lower() == "img" or tag.lower() == "video") and self.exclude_images:
+        if (tag.lower() == "video") and self.exclude_images:
             return
 
-        if tag == "script":
-            self.verbatim = False
+        if tag in ("script", "pre"):
+            self.verbatim -= 1
 
         # Reconstruct the original end tag.
         self.pieces.append(f"</{locals()['tag']}>")
