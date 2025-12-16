@@ -52,7 +52,23 @@ dict_methods = {
     "st_mtime": ("Last Modified", secondstotime),
     "st_ctime": ("Metadata Changed", secondstotime),
     "st_birthtime": ("File Created", secondstotime),
+    "st_file_attributes": ("File Attributes", ord),
+    "st_reparse_tag": ("Reparse Type", ord),
 }
+
+
+def st_to_human(key, val) -> str:
+    """_summary_
+
+    Args:
+        item (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
+    name, processfunc = dict_methods[key]
+
+    return f"{name}: {processfunc(val)}"
 
 
 def format_dict(stat_dict) -> str:
@@ -64,7 +80,7 @@ def format_dict(stat_dict) -> str:
     Returns:
         str: _description_
     """
-    ret = "\n\t".join([f"{k}={v}" for (k, v) in stat_dict.items()])
+    ret = "\n\t".join([st_to_human(k, v) for (k, v) in stat_dict.items()])
 
     return "\t" + ret
 
