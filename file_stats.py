@@ -7,23 +7,37 @@ Returns:
     _type_: _description_
 """
 
+from datetime import datetime, timezone
 import os
 import glob
-import time
 
 
-def secondstotime() -> str:
+def secondstotime(time_in_seconds) -> str:
     """_summary_
 
     Returns:
         str: _description_
     """
-    tm = time.localtime()
-    return f"{tm.tm_yday}/{tm.tm_mon}/{tm.tm_year} {tm.tm_hour}:{tm.tm_min}:{tm.tm_sec}"
+    tm = datetime.fromtimestamp(time_in_seconds, timezone.utc)
+
+    return f"{tm.day}/{tm.month}/{tm.year} {tm.hour}:{tm.minute}:{tm.second}"
 
 
-def formatbytes(byte_count) -> str:
-    return ""
+def get_human_readable_size(size_bytes) -> str:
+    """
+    Convert a file size from bytes to a human-readable string (B, KB, MB, GB, TB).
+    """
+    if size_bytes == 0:
+        return "0 Bytes"
+
+    # Define the units and their divisor (1024 for KiB, MiB, etc.)
+    units = ["Bytes", "KB", "MB", "GB", "TB"]
+    i = 0
+    while size_bytes >= 1024 and i < len(units) - 1:
+        size_bytes /= 1024.0
+        i += 1
+
+    return f"{size_bytes:.2f} {units[i]}"
 
 
 dict_methods = {
@@ -33,8 +47,8 @@ dict_methods = {
     "st_nlink": ("Hard Link Count", ord),
     "st_uid": ("User Id", ord),
     "st_gid": ("Group Id", ord),
-    "st_size": ("Size", formatbytes),
-    "st_atime": ("Lst Accessed", secondstotime),
+    "st_size": ("Size", get_human_readable_size),
+    "st_atime": ("Last Accessed", secondstotime),
     "st_mtime": ("Last Modified", secondstotime),
     "st_ctime": ("Metadata Changed", secondstotime),
     "st_birthtime": ("File Created", secondstotime),
