@@ -97,8 +97,26 @@ def st_to_human(key, val) -> str:
     return f"{name}: {processfunc(val)}"
 
 
+def file_mode(mode) -> str:
+    """_summary_
+
+    Args:
+        mode (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
+    # pylint: disable=import-outside-toplevel
+    if sys.platform == "win32":
+        import stat
+
+        return stat.filemode(mode)
+
+    return ""
+
+
 dict_methods = {
-    "st_mode": ("File Mode", int),
+    "st_mode": ("File Mode", file_mode),
     "st_ino": ("File Index", int),
     "st_dev": ("Device Id", int),
     "st_nlink": ("Hard Link Count", int),
