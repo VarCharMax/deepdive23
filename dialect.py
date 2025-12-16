@@ -24,7 +24,6 @@ class Dialectizer(BaseHTMLProcessor):
     def reset(self) -> None:
         """extend (called from __init__ in ancestor)"""
         # Reset all data attributes
-        self.verbatim = False
         BaseHTMLProcessor.reset(self)
 
     def handle_data(self, data) -> None:
