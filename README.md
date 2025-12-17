@@ -9,6 +9,7 @@ So I thought it would be a good exercise to take the version 2 code and re-write
 The applications are:
 fileinfodriver.py
 dialect.py
+plurals.py
 romantest.py
 file_stats.py
 odbchelper.py
