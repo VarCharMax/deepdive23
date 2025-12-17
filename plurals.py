@@ -32,10 +32,22 @@ patterns = (
     ("$", "$", "s"),
 )
 
-rules = []
+
+def rules(
+    rules_filename,
+):
+    """
+    Docstring for rules
+
+    :param rules_filename: Description
+    """
+    with open(rules_filename, encoding="utf-8") as pattern_file:
+        for line in pattern_file:
+            pattern, search, replace = line.split(None, 3)
+            yield build_match_and_apply_functions(pattern, search, replace)
 
 
-def plural(noun) -> str:
+def plural(noun, rules_filename="plural-rules.txt") -> str:
     """_summary_
 
     Args:
@@ -44,12 +56,8 @@ def plural(noun) -> str:
     Returns:
         _type_: _description_
     """
-    with open("plural4-rules.txt", encoding="utf-8") as pattern_file:
-        for line in pattern_file:
-            pattern, search, replace = line.split(None, 3)
-            rules.append(build_match_and_apply_functions(pattern, search, replace))
 
-    for matches_rule, apply_rule in rules:
+    for matches_rule, apply_rule in rules(rules_filename):
         if matches_rule(noun):
             return apply_rule(noun)
 
