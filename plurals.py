@@ -16,10 +16,10 @@ def build_match_and_apply_functions(pattern, search, replace):
         replace (_type_): _description_
     """
 
-    def matches_rule(word):  # -> Any:# -> Any:
+    def matches_rule(word) -> re.Match[str] | None:
         return re.search(pattern, word)
 
-    def apply_rule(word):  # -> Any:
+    def apply_rule(word) -> str:  # -> Any:
         return re.sub(search, replace, word)
 
     return (matches_rule, apply_rule)
@@ -32,16 +32,10 @@ patterns = (
     ("$", "$", "s"),
 )
 
-
 rules = []
 
-rules = [
-    build_match_and_apply_functions(pattern, search, replace)
-    for (pattern, search, replace) in patterns
-]
 
-
-def plural(noun):  # -> Any | None:
+def plural(noun) -> str:
     """_summary_
 
     Args:
@@ -50,9 +44,16 @@ def plural(noun):  # -> Any | None:
     Returns:
         _type_: _description_
     """
+    with open("plural4-rules.txt", encoding="utf-8") as pattern_file:
+        for line in pattern_file:
+            pattern, search, replace = line.split(None, 3)
+            rules.append(build_match_and_apply_functions(pattern, search, replace))
+
     for matches_rule, apply_rule in rules:
         if matches_rule(noun):
             return apply_rule(noun)
+
+    return ""
 
 
 if __name__ == "__main__":
@@ -62,8 +63,3 @@ if __name__ == "__main__":
         print(plural(sys.argv[1]))
     else:
         print(__doc__)
-
-# with open("plural4-rules.txt", encoding="utf-8") as pattern_file:
-#    for line in pattern_file:
-#        pattern, search, replace = line.split(None, 3)
-#        rules.append(build_match_and_apply_functions(pattern, search, replace))
