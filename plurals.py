@@ -6,6 +6,8 @@ Demonstration of closures, generators, lambdas, loading re rules from config fil
 
 import re
 
+from lazyrules import LazyRules
+
 
 def build_match_and_apply_functions(pattern, search, replace):
     """_summary_
@@ -25,17 +27,9 @@ def build_match_and_apply_functions(pattern, search, replace):
     return (matches_rule, apply_rule)
 
 
-patterns = (
-    ("[sxz]$", "$", "es"),
-    ("[^aeioudgkprt]h$", "$", "es"),
-    ("(qu|[^aeiou])y$", "y$", "ies"),
-    ("$", "$", "s"),
-)
-
-
 def rules(
     rules_filename,
-):
+):  # -> Generator[tuple[Callable[..., Match[str] | None], Callabl...:
     """
     Docstring for rules
 
@@ -47,7 +41,7 @@ def rules(
             yield build_match_and_apply_functions(pattern, search, replace)
 
 
-def plural(noun, rules_filename="plural-rules.txt") -> str:
+def plural(noun) -> str:
     """_summary_
 
     Args:
@@ -57,7 +51,7 @@ def plural(noun, rules_filename="plural-rules.txt") -> str:
         _type_: _description_
     """
 
-    for matches_rule, apply_rule in rules(rules_filename):
+    for matches_rule, apply_rule in LazyRules():
         if matches_rule(noun):
             return apply_rule(noun)
 
