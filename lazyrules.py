@@ -45,11 +45,11 @@ class LazyRules:
             raise StopIteration
 
         pattern, search, replace = line.split(None, 3)
-        funcs = self.build_match_and_apply_functions(pattern, search, replace)
+        funcs = self.__build_match_and_apply_functions(pattern, search, replace)
         self.cache.append(funcs)
         return funcs
 
-    def build_match_and_apply_functions(self, pattern, search, replace):
+    def __build_match_and_apply_functions(self, pattern, search, replace):
         """_summary_
 
         Args:
@@ -65,6 +65,3 @@ class LazyRules:
             return re.sub(search, replace, word)
 
         return (matches_rule, apply_rule)
-
-
-rules = LazyRules()

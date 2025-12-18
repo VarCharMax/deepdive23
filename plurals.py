@@ -5,7 +5,6 @@ Demonstration of closures, generators, lambdas, loading re rules from config fil
 """
 
 import re
-
 from lazyrules import LazyRules
 
 
@@ -62,6 +61,8 @@ if __name__ == "__main__":
     import sys
 
     if sys.argv[1:]:
-        print(plural(sys.argv[1]))
+        cmd_args = sys.argv[1:2][0].split(" ")
+        for a in cmd_args:
+            print(plural(a))
     else:
         print(__doc__)
