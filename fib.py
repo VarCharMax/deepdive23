@@ -1,20 +1,20 @@
 """
 Calculate factorial of n recursively with debug prints.
 
-Demonstration of recursion.
+Demonstration of generator in list, unpacking list for print() param.
 """
 
+from typing import Any, Generator
 
-def fib(n) -> int:
+
+def fib(maxnum) -> Generator[int, Any, None]:
     """Calculate factorial of n recursively with debug prints."""
+    a, b = 0, 1
 
-    print("n =", n)
-    if n > 1:
-        return n * fib(n - 1)
-
-    print("end of the line")
-    return 1
+    while a < maxnum:
+        yield a
+        a, b = b, a + b
 
 
 if __name__ == "__main__":
-    print(fib(3))
+    print(*list(fib(1000)), sep=", ", end="")
