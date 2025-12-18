@@ -1,5 +1,8 @@
 """Print methods and doc strings.
-Takes module, class, list, dictionary, or string."""
+Takes module, class, list, dictionary, or string.
+
+Demonstration of lambdas, inspection, getattr().
+"""
 
 import inspect
 

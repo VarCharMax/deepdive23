@@ -4,7 +4,9 @@ Raises:
     ValueError: _description_
 
 Returns:
-    _type_: _description_
+
+Demonstration of dictionary comprehension, dictionary formatting, conditional imports,
+time conversion and formatting, dictionary lookups, tuple with function references.
 """
 
 from datetime import datetime

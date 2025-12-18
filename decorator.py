@@ -1,3 +1,8 @@
+"""
+Demonstraion of decorator pattern.
+"""
+
+
 def my_decorator(func):
     """_summary_
 

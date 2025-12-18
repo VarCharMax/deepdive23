@@ -1,4 +1,7 @@
-"""_summary_"""
+"""_summary_
+
+Demonstriono of overriding library type, html content rewriting, class attributes, re, webbrowser lib.
+"""
 
 import re
 import sys

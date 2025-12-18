@@ -1,4 +1,7 @@
-"""Helper functions for ODBC connection strings."""
+"""Helper functions for ODBC connection strings.
+
+Demonstration of list comprension, string formating.
+"""
 
 
 def buildconnectionstring(params: dict[str, str]) -> str:
