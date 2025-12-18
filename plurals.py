@@ -5,7 +5,6 @@ Demonstration of closures, generators, lambdas, loading re rules from config fil
 """
 
 import re
-
 from lazyrules import LazyRules
 
 
