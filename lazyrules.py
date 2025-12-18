@@ -33,7 +33,7 @@ class LazyRules:
         self.cache_index = 0
         return self
 
-    def __next__(self):
+    def __next__(self):# -> Any | tuple[Callable[..., Match[str] | None], Callable[.....:# -> Any | tuple[Callable[..., Match[str] | None], Callable[.....:# -> Any | tuple[Callable[..., Match[str] | None], Callable[.....:
         self.cache_index += 1
         if len(self.cache) >= self.cache_index:
             return self.cache[self.cache_index - 1]
