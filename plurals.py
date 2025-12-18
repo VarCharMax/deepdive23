@@ -1,7 +1,7 @@
 """_summary_
 
 Returns:
-Demonstration of closures, generators, lambdas, loading re rules from config file.
+Demonstration of closures, generators, custom iterators, loading re rules from config file.
 """
 
 import re
