@@ -31,7 +31,8 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     for guess in itertools.permutations(digits, len(characters)):
         if zero not in guess[:n]:
             equation = puzzle.translate(dict(zip(characters, guess)))
-            if eval(equation):  # pylint: disable=W0123
+            x, y, z = re.findall(r"-?\d*\.?\d+", equation)
+            if int(x) + int(y) == int(z):
                 return equation
     return "No solution!!"
 
