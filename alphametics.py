@@ -8,7 +8,7 @@ import re
 import itertools
 
 
-def solve(puzzle):
+def solve(puzzle: str) -> str:  # -> Any | None:
     """_summary_
 
     Args:
@@ -31,16 +31,17 @@ def solve(puzzle):
     for guess in itertools.permutations(digits, len(characters)):
         if zero not in guess[:n]:
             equation = puzzle.translate(dict(zip(characters, guess)))
-            if eval(equation):
+            if eval(equation):  # pylint: disable=W0123
                 return equation
+    return "No solution!!"
 
 
 if __name__ == "__main__":
     import sys
 
-    for puzzle in sys.argv[1:]:
-        print(puzzle)
-        solution = solve(puzzle)
+    for puzz in sys.argv[1:]:
+        print(puzz)
+        solution = solve(puzz)
         if solution:
             print(solution)
 

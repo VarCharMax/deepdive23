@@ -33,6 +33,8 @@ def rules(
     Docstring for rules
 
     :param rules_filename: Description
+
+    - returns generator of tuples of match and apply functions.
     """
     with open(rules_filename, encoding="utf-8") as pattern_file:
         for line in pattern_file:
@@ -50,7 +52,7 @@ def plural(noun) -> str:
         _type_: _description_
     """
 
-    for matches_rule, apply_rule in LazyRules():
+    for matches_rule, apply_rule in rules("plural-rules.txt"):
         if matches_rule(noun):
             return apply_rule(noun)
 
