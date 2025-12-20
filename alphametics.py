@@ -42,7 +42,19 @@ def solve(puzzle: str) -> str:  # -> Any | None:
 if __name__ == "__main__":
     import sys
 
-    for puzz in sys.argv[1:]:
+    puzzles = sys.argv[1:]
+    if not puzzles:
+        puzzles = [
+            "SEND + MORE == MONEY",
+            "TWO + TWO == FOUR",
+            "BASE + BALL == GAMES",
+            "YOU - ME == SAD",
+            "YOU + ME == HAPPY",
+            "SATURN + URANUS + NEPTUNE - PLUTO == PLANETS",
+            "CROSS + ROADS == DANGER",
+            "ZEROES + ONES == BINARY",
+        ]
+    for puzz in puzzles:
         print(puzz)
         solution = solve(puzz)
         if solution:
