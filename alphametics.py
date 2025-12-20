@@ -35,8 +35,8 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     operations = {
         "+": operator.add,
         "-": operator.sub,
-        "*": operator.mul,
-        "/": operator.truediv,
+        # "*": operator.mul,
+        # "/": operator.truediv,
         "==": operator.eq,
     }
 
