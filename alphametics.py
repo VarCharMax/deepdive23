@@ -9,6 +9,7 @@ TODO: Support more complex equations.
 import operator
 import re
 from itertools import zip_longest, permutations
+from typing import Any
 
 
 def solve(puzzle: str) -> str:  # -> Any | None:
@@ -20,6 +21,12 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     Returns:
         _type_: _description_
     """
+
+    def convert_val(tup: tuple[int, Any]) -> int:
+        if tup[1] == "-":
+            return tup[0] * -1
+        return tup[0]
+
     operations = {
         "+": operator.add,
         "-": operator.sub,
@@ -33,13 +40,23 @@ def solve(puzzle: str) -> str:  # -> Any | None:
 
     words = re.findall("[A-Z]+", puzzle.upper())
     unique_characters = set("".join(words))
-    operators = re.findall(r"[+\-*/%//=]+", puzzle)
+    operators = re.findall(
+        r"[+\-*/%//=]+", puzzle
+    )  # Each operator including '==' in sequence.
+
     assert len(unique_characters) <= 10, "Too many letters"
     assert set(operators).issubset(set(operations.keys())), "Unsupported operator"
     assert operators.count("==") == 1, "Exactly one '==' is required"
     assert (
         operators.index("==") == len(operators) - 1 or operators.index("==") == 0
     ), "'==' must be at start or end of the equation"
+
+    if operators.index("==") == 0:
+        eq_pos = 0
+    else:
+        eq_pos = len(operators) - 1
+
+    operators.remove("==")  # Remove '==' for calculation purposes.
     first_letters = {word[0] for word in words}
     n = len(first_letters)
     sorted_characters = "".join(first_letters) + "".join(
@@ -52,19 +69,25 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     for guess in permutations(digits, len(characters)):
         if zero not in guess[:n]:
             equation = puzzle.translate(dict(zip(characters, guess)))
+
+            # Extract all numbers from the translated equation
             members = list(int(v) for v in re.findall(r"-?\d*\.?\d+", equation))
-            results = list(zip_longest(members, operators))
 
-            # Find position of '==' in equation. Could be 'a + b == c' or 'd == a + b + c', etc
+            # Determine result and body based on position of '=='.
+            if eq_pos == 0:  # '==' is at the start
+                res = members[0]  # Result is leftmost value
+                body = members[1:]
+            else:  # '==' is at the end
+                res = members[-1]
+                body = members[:-1]
+
+            results = list((convert_val(o) for o in zip_longest(body, operators)))
+
+            # Find position of '==' in equation.
+            # Could be 'a + b == c' or 'd == a + b + c', etc
             # But only allow one '==' and no fancy variations.
-
-            for index, r in enumerate(results):
-                x = operations[r[1]]
-                y = x(r[0], results[index + 1][0]) if index + 1 < len(results) else None
-
-                v = 1
-            # if int(x) + int(y) == int(z):  # pylint: disable=W0123
-            #    return equation
+            if int(res) == sum(results):
+                return equation
     return "No solution!!"
 
 
