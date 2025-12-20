@@ -61,7 +61,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         eq_pos = len(operators) - 1
 
     operators.remove("==")  # Remove '==' for calculation purposes.
-    operators.insert(0, "")  # To make list lengths match.
+    operators.insert(0, "")  # To align lists.
     first_letters = {word[0] for word in words}
     n = len(first_letters)
     sorted_characters = "".join(first_letters) + "".join(
@@ -78,7 +78,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
             # Extract all numbers from the translated equation
             members = list(int(v) for v in re.findall(r"-?\d*\.?\d+", equation))
 
-            # Determine result and body based on position of '=='.
+            # Locate body and result based on position of '=='.
             if eq_pos == 0:  # '==' is at the start
                 res = members[0]  # Result is leftmost value
                 body = members[1:]
@@ -86,6 +86,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
                 res = members[-1]
                 body = members[:-1]
 
+            # Deal with subtraction simply by negating next value.
             results = [convert_val(o) for o in zip_longest(body, operators)]
 
             if int(res) == sum(results):
