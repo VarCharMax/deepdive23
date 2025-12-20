@@ -32,9 +32,6 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         "-": operator.sub,
         "*": operator.mul,
         "/": operator.truediv,
-        # "//": operator.floordiv,
-        # "%": operator.mod,
-        # "**": operator.pow,
         "==": operator.eq,
     }
 
@@ -81,7 +78,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
                 res = members[-1]
                 body = members[:-1]
 
-            results = list((convert_val(o) for o in zip_longest(body, operators)))
+            results = [convert_val(o) for o in zip_longest(body, operators)]
 
             # Find position of '==' in equation.
             # Could be 'a + b == c' or 'd == a + b + c', etc
