@@ -1,6 +1,6 @@
 """_summary_
 
-Demonstriono of overriding library type, html content rewriting, class attributes, re, webbrowser lib.
+Demonstrion of overriding library type, html content rewriting, class attributes, re, webbrowser lib.
 """
 
 import re
