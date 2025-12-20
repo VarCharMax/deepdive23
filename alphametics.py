@@ -103,11 +103,11 @@ if __name__ == "__main__":
             "SEND + MORE == MONEY",
             "TWO + TWO == FOUR",
             "BASE + BALL == GAMES",
+            "YOU - ME == SAD",
+            "YOU + ME == HAPPY",
             "SATURN + URANUS + NEPTUNE - PLUTO == PLANETS",
             "CROSS + ROADS == DANGER",
             "ZEROES + ONES == BINARY",
-            "YOU - ME == SAD",
-            "YOU + ME == HAPPY",
         ]
     for puzz in puzzles:
         print(puzz)
