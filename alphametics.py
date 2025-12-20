@@ -3,10 +3,13 @@
 alphametics.solve('SEND + MORE == MONEY')
 '9567 + 1085 == 10652'
 
+Modified to allow remove reliance on eval(), permit other operators besides addition,
+and allow more flexibility in the equation structure.
+
 I've kept the copyright notice from the original code at the bottom of this file.
 But I don't know why people feel the need to include such notices in code like this.
 It's just a brute force solution, and there are actual mathematical techniques for
-solving these.
+solving these types of puzzles.
 """
 
 import operator
@@ -58,6 +61,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         eq_pos = len(operators) - 1
 
     operators.remove("==")  # Remove '==' for calculation purposes.
+    operators.insert(0, "")  # To make list lengths match.
     first_letters = {word[0] for word in words}
     n = len(first_letters)
     sorted_characters = "".join(first_letters) + "".join(
