@@ -50,6 +50,8 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         operators.index("==") == len(operators) - 1 or operators.index("==") == 0
     ), "'==' must be at start or end of the equation"
 
+    # Find position of '==' in equation.
+    # Could be 'a + b == c' or 'd == a + b + c', etc
     if operators.index("==") == 0:
         eq_pos = 0
     else:
@@ -82,9 +84,6 @@ def solve(puzzle: str) -> str:  # -> Any | None:
 
             results = [convert_val(o) for o in zip_longest(body, operators)]
 
-            # Find position of '==' in equation.
-            # Could be 'a + b == c' or 'd == a + b + c', etc
-            # But only allow one '==' and no fancy variations.
             if int(res) == sum(results):
                 return equation
     return "No solution!!"
