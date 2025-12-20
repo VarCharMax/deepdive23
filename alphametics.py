@@ -3,13 +3,15 @@
 alphametics.solve('SEND + MORE == MONEY')
 '9567 + 1085 == 10652'
 
-TODO: Support more complex equations.
+I've kept the copyright notice from the original code at the bottom of this file.
+But I don't know why people feel the need to include such notices in code like this.
+It's just a brute force solution, and there are actual mathematical techniques for
+solving these.
 """
 
 import operator
 import re
 from itertools import zip_longest, permutations
-from typing import Any
 
 
 def solve(puzzle: str) -> str:  # -> Any | None:
@@ -22,7 +24,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         _type_: _description_
     """
 
-    def convert_val(tup: tuple[int, Any]) -> int:
+    def convert_val(tup: tuple[int, str]) -> int:
         if tup[1] == "-":
             return tup[0] * -1
         return tup[0]
