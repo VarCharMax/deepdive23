@@ -3,7 +3,7 @@
 alphametics.solve('SEND + MORE == MONEY')
 '9567 + 1085 == 10652'
 
-Modified to allow remove reliance on eval(), permit other operators besides addition,
+Modified to remove reliance on eval(), permit other operators besides addition,
 and allow more flexibility in the equation structure.
 
 I've kept the copyright notice from the original code at the bottom of this file.
@@ -14,7 +14,7 @@ solving these types of puzzles.
 
 import operator
 import re
-from itertools import zip_longest, permutations
+from itertools import permutations
 
 
 def solve(puzzle: str) -> str:  # -> Any | None:
@@ -87,7 +87,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
                 body = members[:-1]
 
             # Deal with subtraction simply by negating next value.
-            results = [convert_val(o) for o in zip_longest(body, operators)]
+            results = [convert_val(o) for o in zip(body, operators)]
 
             if int(res) == sum(results):
                 return equation
