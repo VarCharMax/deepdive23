@@ -44,7 +44,7 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     unique_characters = set("".join(words))
     operators = re.findall(
         r"[+\-*/%//=]+", puzzle
-    )  # Each operator including '==' in sequence.
+    )  # Each operator instance including '==' in sequence.
 
     assert len(unique_characters) <= 10, "Too many letters"
     assert set(operators).issubset(set(operations.keys())), "Unsupported operator"
@@ -54,14 +54,14 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     ), "'==' must be at start or end of the equation"
 
     # Find position of '==' in equation.
-    # Could be 'a + b == c' or 'd == a + b + c', etc
+    # Could be 'a + b == c' or 'd == a + b - c', etc
     if operators.index("==") == 0:
         eq_pos = 0
     else:
         eq_pos = len(operators) - 1
 
     operators.remove("==")  # Remove '==' for calculation purposes.
-    operators.insert(0, "")  # To align lists.
+    operators.insert(0, "")  # Align lists of numbers and operators.
     first_letters = {word[0] for word in words}
     n = len(first_letters)
     sorted_characters = "".join(first_letters) + "".join(
