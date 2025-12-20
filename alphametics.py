@@ -32,7 +32,9 @@ def solve(puzzle: str) -> str:  # -> Any | None:
         if zero not in guess[:n]:
             equation = puzzle.translate(dict(zip(characters, guess)))
             x, y, z = re.findall(r"-?\d*\.?\d+", equation)
-            if int(x) + int(y) == int(z):
+            if int(x) + int(y) == int(
+                z
+            ):  # Only works for addition 'x + y == z' examples.
                 return equation
     return "No solution!!"
 
