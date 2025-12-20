@@ -3,8 +3,8 @@
 alphametics.solve('SEND + MORE == MONEY')
 '9567 + 1085 == 10652'
 
-Modified to remove reliance on eval(), permit other operators besides addition,
-and allow more flexibility in the equation structure.
+Modified to remove reliance on eval(), permit multiple operations, other operators
+besides addition, and allow more flexibility in the equation structure.
 
 I've kept the copyright notice from the original code at the bottom of this file.
 But I don't know why people feel the need to include such notices in code like this.
