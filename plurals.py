@@ -55,7 +55,7 @@ def plural(noun) -> str:
         _type_: _description_
     """
 
-    for matches_rule, apply_rule in LazyRules():
+    for matches_rule, apply_rule in lrules:
         if matches_rule(noun):
             return apply_rule(noun)
 
@@ -67,7 +67,6 @@ if __name__ == "__main__":
 
     if sys.argv[1:]:
         cmd_args = sys.argv[1:]
-        print(len(cmd_args))
         for a in cmd_args:
             print(plural(a))
     else:
