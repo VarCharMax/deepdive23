@@ -19,4 +19,4 @@ def fac(n) -> int:
 
 
 if __name__ == "__main__":
-    print(fac(3))
+    print(fac(10))
