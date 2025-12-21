@@ -2,10 +2,19 @@
 
 alphametics.solve('SEND + MORE == MONEY')
 '9567 + 1085 == 10652'
+
+Modified to remove reliance on eval(), permit multiple operations, other operators
+besides addition, and allow more flexibility in the equation structure.
+
+I've kept the copyright notice from the original code at the bottom of this file.
+But I don't know why people feel the need to include such notices in code like this.
+It's just a brute force solution, and there are actual mathematical techniques for
+solving these types of puzzles.
 """
 
+import operator
 import re
-import itertools
+from itertools import permutations
 
 
 def solve(puzzle: str) -> str:  # -> Any | None:
@@ -17,9 +26,42 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     Returns:
         _type_: _description_
     """
+
+    def convert_val(tup: tuple[int, str]) -> int:
+        if tup[1] == "-":
+            return tup[0] * -1
+        return tup[0]
+
+    operations = {
+        "+": operator.add,
+        "-": operator.sub,
+        # "*": operator.mul,
+        # "/": operator.truediv,
+        "==": operator.eq,
+    }
+
     words = re.findall("[A-Z]+", puzzle.upper())
     unique_characters = set("".join(words))
+    operators = re.findall(
+        r"[+\-*/%//=]+", puzzle
+    )  # Each operator instance including '==' in sequence.
+
     assert len(unique_characters) <= 10, "Too many letters"
+    assert set(operators).issubset(set(operations.keys())), "Unsupported operator"
+    assert operators.count("==") == 1, "Exactly one '==' is required"
+    assert (
+        operators.index("==") == len(operators) - 1 or operators.index("==") == 0
+    ), "'==' must be at start or end of the equation"
+
+    # Find position of '==' in equation.
+    # Could be 'a + b == c' or 'd == a + b - c', etc
+    if operators.index("==") == 0:
+        eq_pos = 0
+    else:
+        eq_pos = len(operators) - 1
+
+    operators.remove("==")  # Remove '==' for calculation purposes.
+    operators.insert(0, "")  # Align lists of numbers and operators.
     first_letters = {word[0] for word in words}
     n = len(first_letters)
     sorted_characters = "".join(first_letters) + "".join(
@@ -28,13 +70,26 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     characters = tuple(ord(c) for c in sorted_characters)
     digits = tuple(ord(c) for c in "0123456789")
     zero = digits[0]
-    for guess in itertools.permutations(digits, len(characters)):
+
+    for guess in permutations(digits, len(characters)):
         if zero not in guess[:n]:
             equation = puzzle.translate(dict(zip(characters, guess)))
-            x, y, z = re.findall(r"-?\d*\.?\d+", equation)
-            if int(x) + int(y) == int(
-                z
-            ):  # Only works for addition 'x + y == z' examples.
+
+            # Extract all numbers from the translated equation
+            members = list(int(v) for v in re.findall(r"-?\d*\.?\d+", equation))
+
+            # Locate body and result based on position of '=='.
+            if eq_pos == 0:  # '==' is at the start
+                res = members[0]  # Result is leftmost value
+                body = members[1:]
+            else:  # '==' is at the end
+                res = members[-1]
+                body = members[:-1]
+
+            # Deal with subtraction simply by negating next value.
+            results = [convert_val(o) for o in zip(body, operators)]
+
+            if int(res) == sum(results):
                 return equation
     return "No solution!!"
 
