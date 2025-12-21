@@ -27,7 +27,7 @@ def build_match_and_apply_functions(pattern, search, replace):
 
 
 def rules(
-    rules_filename,
+    rules_filename="plural-rules.txt",
 ):  # -> Generator[tuple[Callable[..., Match[str] | None], Callabl...:
     """
     Docstring for rules
@@ -42,6 +42,9 @@ def rules(
             yield build_match_and_apply_functions(pattern, search, replace)
 
 
+lrules = LazyRules()
+
+
 def plural(noun) -> str:
     """_summary_
 
@@ -52,7 +55,7 @@ def plural(noun) -> str:
         _type_: _description_
     """
 
-    for matches_rule, apply_rule in rules("plural-rules.txt"):
+    for matches_rule, apply_rule in lrules:
         if matches_rule(noun):
             return apply_rule(noun)
 
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     import sys
 
     if sys.argv[1:]:
-        cmd_args = sys.argv[1:2][0].split(" ")
+        cmd_args = sys.argv[1:]
         for a in cmd_args:
             print(plural(a))
     else:
