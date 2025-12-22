@@ -176,6 +176,6 @@ def stats_to_dict(filestat) -> dict[str, int]:
 
 if __name__ == "__main__":
     metadata_dict = {
-        f: format_dict(stats_to_dict(os.stat(f))) for f in glob.glob("fib.py")
+        f: format_dict(stats_to_dict(os.stat(f))) for f in glob.glob("fibonacci1.py")
     }
     print("".join([f"{k}:\n{v}" for (k, v) in metadata_dict.items()]))
