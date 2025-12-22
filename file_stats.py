@@ -79,7 +79,7 @@ def check_attributes(attrs: int) -> str:
 
             return ", ".join(list(attribs))
 
-        except Exception:
+        except ValueError:
             pass
 
     return ""
