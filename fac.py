@@ -1,5 +1,4 @@
 """Calculate factorial of n recursively with debug prints.
-Calculate factorial of n recursively with debug prints.
 Demonstration of recursion.
 """
 

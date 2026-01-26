@@ -28,6 +28,9 @@ def solve(puzzle: str) -> str:  # -> Any | None:
     """
 
     def convert_val(tup: tuple[int, str]) -> int:
+        # Deal with subtraction simply by negating any value with associated "-".
+        # Consequently, the only operation we need to do is sum().
+        # This won't work for multiplication or division.
         if tup[1] == "-":
             return tup[0] * -1
         return tup[0]
@@ -86,7 +89,6 @@ def solve(puzzle: str) -> str:  # -> Any | None:
                 res = members[-1]
                 body = members[:-1]
 
-            # Deal with subtraction simply by negating next value.
             results = [convert_val(o) for o in zip(body, operators)]
 
             if int(res) == sum(results):
